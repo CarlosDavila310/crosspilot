@@ -50,7 +50,7 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - `new_state()` y `products_per_client(state)`.
   - Test: `products_per_client(new_state()) == 2.2`; `new_state()` devuelve copias independientes.
 
-- [ ] **T1.3 [D] Reglas: check_policy y validate_offer** · 40 min · R2.4, R3
+- [x] **T1.3 [D] Reglas: check_policy y validate_offer** · 40 min · R2.4, R3
   - Archivos: `crosspilot/rules.py`, `tests/test_rules.py`.
   - Según design §6.1 y §6.3, incluida la función que deriva APROBADO, CONTRAOFERTA o VETO.
   - Tests: C01 activo fijo por 20,000 da CONTRAOFERTA de 12,000; C03 crédito da VETO; no crédito
