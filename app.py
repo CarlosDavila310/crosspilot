@@ -273,16 +273,19 @@ section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 20px; }
 
 # ---------- session state ----------
 
+SECRET_NAMES = ("ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "CROSSPILOT_MODEL")
+
+
 def _secret_key():
-    """Streamlit Cloud: expose the API key from Secrets to the SDK through the environment."""
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        return True
-    try:
-        key = st.secrets["ANTHROPIC_API_KEY"]
-    except Exception:  # no secrets file or no key: Streamlit raises different errors per version
-        return False
-    os.environ["ANTHROPIC_API_KEY"] = key
-    return True
+    """Streamlit Cloud: expose Secrets to the SDK through the environment. True if an API key is available."""
+    for secret in SECRET_NAMES:
+        if os.environ.get(secret):
+            continue
+        try:
+            os.environ[secret] = str(st.secrets[secret])
+        except Exception:  # no secrets file or no such key: Streamlit raises different errors per version
+            pass
+    return bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 
 def init_session(reset=False):

@@ -5,7 +5,7 @@ import os
 
 from crosspilot import fakes
 
-MODEL = os.environ.get("CROSSPILOT_MODEL", "claude-sonnet-5-5")
+DEFAULT_MODEL = "claude-sonnet-5-5"
 MAX_TURNS = 5
 
 AGENT_NAMES = {
@@ -23,11 +23,17 @@ class AgentError(Exception):
         super().__init__(f"{AGENT_NAMES.get(agent, agent)} no respondió")
 
 
+def _model():
+    # Read per call: on Streamlit Cloud the app copies Secrets into the environment after this module loads.
+    return os.environ.get("CROSSPILOT_MODEL", DEFAULT_MODEL)
+
+
 @functools.cache
-def _client():
+def _client(base_url):
     import anthropic
 
-    return anthropic.Anthropic(timeout=60)
+    # base_url=None lets the SDK use api.anthropic.com; any Anthropic-compatible gateway also works.
+    return anthropic.Anthropic(base_url=base_url, timeout=60)
 
 
 def run_agent(agent, system, user, tools, submit_tool, handlers=None, fake=False, fake_ctx=None):
@@ -40,8 +46,8 @@ def run_agent(agent, system, user, tools, submit_tool, handlers=None, fake=False
     messages = [{"role": "user", "content": user}]
     try:
         for _ in range(MAX_TURNS):
-            resp = _client().messages.create(
-                model=MODEL, max_tokens=1500, system=system, tools=tools,
+            resp = _client(os.environ.get("ANTHROPIC_BASE_URL")).messages.create(
+                model=_model(), max_tokens=1500, system=system, tools=tools,
                 tool_choice={"type": "any"}, messages=messages)
             messages.append({"role": "assistant", "content": resp.content})
             results = []

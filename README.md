@@ -16,12 +16,24 @@ ANTHROPIC_API_KEY=... streamlit run app.py           # con Claude real
 pytest -q                                             # nunca llama a la API
 ```
 
-Variables: `ANTHROPIC_API_KEY`, `CROSSPILOT_MODEL` (por defecto `claude-sonnet-5-5`), `CROSSPILOT_FAKE_LLM=1`.
+Variables (entorno o `.streamlit/secrets.toml`, que no se sube al repo):
+
+- `ANTHROPIC_API_KEY`: key de Anthropic o de un gateway compatible con la API de Anthropic.
+- `ANTHROPIC_BASE_URL`: opcional, URL del gateway (sin `/v1`). Vacío = api.anthropic.com.
+- `CROSSPILOT_MODEL`: por defecto `claude-sonnet-5-5`.
+- `CROSSPILOT_FAKE_LLM=1`: arranca en Modo respaldo.
+
 Sin API key, la app arranca con el Modo respaldo encendido.
 
 ## Despliegue
 
-Streamlit Community Cloud → nueva app desde este repo, archivo `app.py`, y en Secrets: `ANTHROPIC_API_KEY = "..."`.
+Streamlit Community Cloud → nueva app desde este repo, archivo `app.py`, y en Secrets las mismas variables:
+
+```toml
+ANTHROPIC_API_KEY = "..."
+ANTHROPIC_BASE_URL = "https://tu-gateway"   # opcional
+CROSSPILOT_MODEL = "..."                    # opcional
+```
 
 URL del demo: https://crosspilot.streamlit.app/
 
