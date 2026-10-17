@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caladea:wght@400;700&family=Carlito:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>body{margin:0;background:#fff}*{box-sizing:border-box}a{color:#007F73}a:hover{color:#0B4F57}input:focus,select:focus{outline:2px solid #8FD3C4;outline-offset:1px}</style>
+</helmet>
+<div style="display:flex;flex-wrap:wrap;min-height:100vh;font-family:Calibri, Carlito, 'Segoe UI', sans-serif;color:#0F2A2E;font-size:17px;line-height:1.45;zoom:{{ zoom }}">
+
+<aside style="flex:1 1 270px;background:#0F2A2E;color:#fff">
+<div style="position:sticky;top:0;padding:28px 24px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:46px;height:46px;border-radius:50%;background:#007F73;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none"><i class="fa-solid fa-diagram-project"></i></div>
+<div><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:30px;font-weight:700;line-height:1">Crosspilot</div><div style="color:#8FD3C4;font-size:16px;margin-top:4px">Priorización y pre-visita</div></div>
+</div>
+<div onClick="{{ toggleFallback }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-radius:10px;background:rgba(255,255,255,.07);cursor:pointer;user-select:none">
+<div><div style="font-weight:700;font-size:17px">Modo respaldo</div><div style="font-size:14px;color:#B9D3CE">Plan B sin API</div></div>
+<div style="width:48px;height:28px;border-radius:14px;background:{{ toggleBg }};position:relative;flex:none;transition:background .2s"><div style="position:absolute;top:4px;left:{{ knobLeft }};width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s"></div></div>
+</div>
+<div style="padding:20px;border-radius:10px;background:#0B4F57">
+<div style="font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#8FD3C4;font-weight:700">Productos por cliente</div>
+<div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:4px">
+<div style="font-family:Cambria, Caladea, Georgia, serif;font-size:64px;font-weight:700;line-height:1">2.2</div>
+<sc-if value="{{ projUp }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:2px"><div style="background:#8FD3C4;color:#0F2A2E;font-weight:700;font-size:18px;padding:3px 10px;border-radius:6px;display:flex;gap:6px;align-items:center"><i class="fa-solid fa-arrow-right"></i>{{ proj }}</div><span style="font-size:13px;color:#B9D3CE">si aceptan lo aprobado</span></div></sc-if>
+</div>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 2px;border-bottom:1px solid rgba(143,211,196,.2)"><span style="color:#D6ECE7">Clientes analizados</span><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:30px;font-weight:700">{{ doneCount }}/10</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 2px;border-bottom:1px solid rgba(143,211,196,.2)"><span style="color:#D6ECE7">Ofertas aprobadas</span><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:30px;font-weight:700">{{ approvedCount }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 2px"><span style="color:#D6ECE7">Vetos de riesgo</span><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:30px;font-weight:700">{{ vetoCount }}</span></div>
+</div>
+<button onClick="{{ reset }}" style="font:inherit;font-size:16px;font-weight:700;padding:12px;border-radius:10px;border:1.5px solid #8FD3C4;background:transparent;color:#8FD3C4;cursor:pointer;display:flex;gap:8px;align-items:center;justify-content:center" style-hover="background:rgba(143,211,196,.12)"><i class="fa-solid fa-rotate-left"></i>Reiniciar demo</button>
+<div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(143,211,196,.2);padding-top:14px">
+<div style="font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#8FD3C4;font-weight:700">Productos para ofrecer</div>
+<div style="font-size:13px;font-weight:700;color:#D6ECE7;margin-top:4px">Del banco</div>
+<sc-for list="{{ catalogBank }}" as="cb"><div style="font-size:15px;display:flex;gap:8px;align-items:baseline"><i class="fa-solid fa-circle" style="font-size:6px;color:#8FD3C4;transform:translateY(-2px)"></i>{{ cb }}</div></sc-for>
+<div style="font-size:13px;font-weight:700;color:#D6ECE7;margin-top:8px">De aliados</div>
+<sc-for list="{{ catalogAlly }}" as="ca"><div style="font-size:15px;display:flex;gap:8px;align-items:baseline"><i class="fa-solid fa-circle" style="font-size:6px;color:#F2B134;transform:translateY(-2px)"></i><span>{{ ca.name }} <span style="color:#B9D3CE">· {{ ca.brand }}</span></span></div></sc-for>
+</div>
+<div style="font-size:14px;color:#B9D3CE;border-top:1px solid rgba(143,211,196,.2);padding-top:14px">Próximo módulo: registro post-visita (en evolución).</div>
+<sc-if value="{{ st }}" hint-placeholder-val="{{ true }}"><div style="font:12px/1.5 ui-monospace, Menlo, monospace;color:#8FD3C4;opacity:.8">st.sidebar · st.toggle · st.metric · st.button</div></sc-if>
+</div>
+</aside>
+
+<main style="flex:999 1 640px;min-width:0;background:#fff">
+<sc-if value="{{ fallback }}" hint-placeholder-val="{{ false }}"><div style="background:#FDF1D6;color:#0F2A2E;padding:10px 40px;display:flex;gap:10px;align-items:center;font-size:16px;border-bottom:1px solid #F2B134"><i class="fa-solid fa-life-ring" style="color:#9A6A00"></i><b>Modo respaldo activo.</b> Respuestas predefinidas, sin llamar a la API.</div></sc-if>
+<div style="max-width:1240px;padding:32px 40px 72px;display:flex;flex-direction:column;gap:28px">
+
+<div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between">
+<div>
+<div style="color:#4A6572;font-size:16px">Sábado 17 de octubre · 10 clientes agendados</div>
+<h1 style="margin:2px 0 0;font-family:Cambria, Caladea, Georgia, serif;font-size:38px;font-weight:700;line-height:1.1">Cartera priorizada del día</h1>
+<div style="color:#4A6572;font-size:16px;margin-top:4px">Prioridad de visita: probabilidad de que el cliente adquiera más productos, con la oferta ya validada por Riesgo.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;min-width:300px;flex:0 1 380px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:16px">
+<span style="display:flex;gap:8px;align-items:center"><sc-if value="{{ running }}"><i class="fa-solid fa-circle-notch fa-spin" style="color:#007F73"></i></sc-if><sc-if value="{{ allDone }}"><i class="fa-solid fa-circle-check" style="color:#007F73"></i></sc-if><b>{{ progressText }}</b></span>
+<button onClick="{{ startAll }}" disabled="{{ running }}" style="font:inherit;font-size:15px;font-weight:700;padding:7px 12px;border-radius:8px;border:1.5px solid #007F73;background:#fff;color:#007F73;cursor:pointer;display:flex;gap:6px;align-items:center" style-hover="background:#F4FAF8"><i class="fa-solid fa-play"></i>Analizar cartera</button>
+</div>
+<div style="height:10px;border-radius:5px;background:#EAF4F2;overflow:hidden"><div style="height:100%;width:{{ progressW }};background:#007F73;transition:width .4s"></div></div>
+<sc-if value="{{ st }}"><code style="align-self:flex-start;font:12px ui-monospace, Menlo, monospace;background:#EAF4F2;color:#0B4F57;padding:3px 7px;border-radius:4px">ThreadPoolExecutor · st.progress · st.status</code></sc-if>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-if value="{{ st }}"><code style="align-self:flex-start;font:12px ui-monospace, Menlo, monospace;background:#EAF4F2;color:#0B4F57;padding:3px 7px;border-radius:4px">st.dataframe(column_config=ProgressColumn) · on_select="rerun" abre el detalle</code></sc-if>
+<div style="overflow-x:auto;border:1px solid #D7E7E3;border-radius:10px">
+<table style="width:100%;border-collapse:collapse;font-size:16px;min-width:900px">
+<thead>
+<tr style="background:#F4FAF8;color:#4A6572;font-size:13px;text-transform:uppercase;letter-spacing:.05em;text-align:left">
+<th style="padding:12px 14px;font-weight:700;width:64px">Orden</th>
+<th style="padding:12px 8px;font-weight:700">Cliente</th>
+<th style="padding:12px 10px;font-weight:700">Productos actuales</th>
+<th style="padding:12px 10px;font-weight:700">Oferta de venta cruzada tras riesgo</th>
+<th style="padding:12px 14px;font-weight:700">Prioridad de visita</th>
+<th style="padding:12px 14px;font-weight:700">Estado</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+<tr onClick="{{ r.open }}" style="cursor:pointer;border-top:1px solid #D7E7E3;background:#fff;vertical-align:middle" style-hover="background:#F4FAF8">
+<td style="padding:12px 14px"><div style="width:30px;height:30px;border-radius:50%;background:{{ r.posBg }};color:{{ r.posFg }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px">{{ r.pos }}</div></td>
+<td style="padding:12px 8px"><div style="font-weight:700;font-size:18px;white-space:nowrap">{{ r.name }}</div><div style="color:#4A6572;font-size:14px;white-space:nowrap">{{ r.business }}</div></td>
+<td style="padding:12px 10px"><div style="display:flex;flex-wrap:wrap;gap:5px"><sc-for list="{{ r.current }}" as="p"><span style="font-size:14px;padding:2px 8px;border-radius:6px;background:#EEF2F3;color:#4A6572;white-space:nowrap">{{ p }}</span></sc-for></div></td>
+<td style="padding:12px 10px">
+<sc-if value="{{ r.isRunning }}"><div style="display:flex;flex-direction:column;gap:3px;font-size:14px"><span style="display:flex;gap:6px;align-items:center;color:#007F73;font-weight:700"><i class="{{ r.vcIcon }}"></i>Venta cruzada</span><span style="display:flex;gap:6px;align-items:center;color:#C2410C;font-weight:700"><i class="fa-solid fa-circle-notch fa-spin"></i>Riesgo</span></div></sc-if>
+<sc-if value="{{ r.isIdle }}"><span style="color:#4A6572;font-size:15px">En cola</span></sc-if>
+<sc-if value="{{ r.isError }}"><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><span style="color:#C2410C;font-weight:700;font-size:14px;display:flex;gap:6px;align-items:center"><i class="fa-solid fa-plug-circle-xmark"></i>Riesgo no respondió</span><button onClick="{{ r.retry }}" style="font:inherit;font-size:13px;font-weight:700;padding:3px 10px;border-radius:6px;border:1.5px solid #C2410C;background:#fff;color:#C2410C;cursor:pointer">Reintentar</button></div></sc-if>
+<sc-if value="{{ r.isDone }}"><div style="display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ r.offerItems }}" as="oi"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-weight:700;font-size:15px">{{ oi.label }}</span><span style="font-size:11px;font-weight:700;letter-spacing:.05em;padding:2px 7px;border-radius:5px;background:{{ oi.bg }};color:#fff;white-space:nowrap">{{ oi.tag }}</span></div></sc-for>
+<sc-if value="{{ r.noOffer }}"><span style="color:#4A6572;font-size:15px">Sin oferta viable</span></sc-if>
+</div></sc-if>
+</td>
+<td style="padding:12px 14px;min-width:180px"><sc-if value="{{ r.isDone }}"><div style="display:inline-flex;align-items:center;gap:10px;padding:4px 14px 4px 6px;border-radius:22px;background:{{ r.lightBg }}"><span style="width:26px;height:26px;border-radius:50%;background:{{ r.light }};flex:none"></span><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:28px;font-weight:700;color:#0F2A2E">{{ r.final }}</span></div></sc-if><sc-if value="{{ r.notDone }}"><span style="color:#B5C7CE">—</span></sc-if></td>
+<td style="padding:12px 14px"><sc-if value="{{ r.hasStatus }}"><span style="font-size:13px;font-weight:700;padding:4px 9px;border-radius:6px;background:{{ r.stBg }};color:{{ r.stFg }};white-space:nowrap">{{ r.status }}</span></sc-if></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="font-size:15px;color:#4A6572">El puntaje es un apoyo, no una decisión: el ejecutivo valida en terreno y aprueba cada oferta. Haz clic en un cliente para ver su análisis.</div>
+</div>
+</div>
+</main>
+
+<sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeDetail }}" data-screen-label="Detalle del cliente" style="position:fixed;inset:0;background:rgba(15,42,46,.55);z-index:50;display:flex;justify-content:flex-end">
+<div onClick="{{ stop }}" style="width:min(1140px,100%);height:100%;overflow-y:auto;background:#fff;box-shadow:-8px 0 24px rgba(15,42,46,.2)">
+
+<div style="position:sticky;top:0;z-index:2;background:#0F2A2E;color:#fff;padding:18px 32px;display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between">
+<div style="display:flex;gap:16px;align-items:center">
+<div style="width:48px;height:48px;border-radius:50%;background:#007F73;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none"><i class="fa-solid fa-store"></i></div>
+<div><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:28px;font-weight:700;line-height:1.1">{{ dt.name }}</div><div style="color:#8FD3C4;font-size:15px">{{ dt.id }} · {{ dt.business }} · {{ dt.district }} · Ingreso neto {{ dt.income }}/mes</div></div>
+</div>
+<div style="display:flex;gap:16px;align-items:center">
+<div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;font-size:14px;color:#B9D3CE;white-space:nowrap"><span style="background:#8FD3C4;color:#0F2A2E;border-radius:8px;padding:4px 10px">Prioridad <b style="font-family:Cambria, Caladea, Georgia, serif;font-size:24px">{{ pd.final }}</b> · #{{ pd.pos }}</span></div>
+<button onClick="{{ closeDetail }}" aria-label="Cerrar" style="font:inherit;font-size:20px;width:44px;height:44px;border:1.5px solid #8FD3C4;border-radius:10px;background:transparent;color:#8FD3C4;cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</div>
+
+<div style="padding:26px 32px 48px;display:flex;flex-direction:column;gap:26px">
+
+<sc-if value="{{ pd.notReady }}"><div style="display:flex;gap:10px;align-items:center;color:#4A6572;font-size:17px;background:#F4FAF8;border-radius:10px;padding:18px"><i class="fa-solid fa-circle-notch fa-spin" style="color:#007F73"></i>Los agentes todavía están analizando a este cliente.</div></sc-if>
+
+<sc-if value="{{ pd.ready }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:20px;align-items:start">
+
+<div style="border:2px solid #F2B134;border-radius:10px;overflow:hidden">
+<div style="background:#0B4F57;color:#fff;padding:14px 18px;display:flex;gap:12px;align-items:flex-start">
+<i class="fa-solid fa-diagram-project" style="color:#8FD3C4;margin-top:4px"></i>
+<div><div style="font-size:13px;font-weight:700;letter-spacing:.1em;color:#8FD3C4">ORQUESTADOR</div><div style="font-size:17px">{{ pd.closing }}</div></div>
+</div>
+<div style="padding:4px 18px 18px">
+<sc-if value="{{ pd.sinOferta }}"><div style="padding:16px 0;color:#4A6572;font-size:17px"><b style="color:#0F2A2E">Sin oferta viable.</b> Ningún crédito pasa la política hoy. Puedes agregar productos que no implican crédito para el banco.</div><button onClick="{{ pd.openAdd }}" style="margin-top:12px;width:100%;font:inherit;font-size:16px;font-weight:700;padding:10px 12px;border-radius:10px;border:1.5px dashed #007F73;background:#fff;color:#007F73;cursor:pointer" style-hover="background:#F4FAF8">+ Agregar producto</button></sc-if>
+<sc-if value="{{ pd.isPending }}"><div>
+<sc-for list="{{ pd.items }}" as="ai"><div style="display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;justify-content:space-between;padding:12px 14px;margin-top:12px;border-radius:10px;background:{{ ai.rowBg }};border:1px solid {{ ai.rowBorder }}">
+<div style="flex:1 1 200px">
+<sc-if value="{{ ai.isAi }}"><div style="font-size:12px;font-weight:700;letter-spacing:.06em;color:#0B4F57;display:flex;gap:6px;align-items:center"><i class="fa-solid fa-wand-magic-sparkles"></i>RECOMENDADO POR IA</div></sc-if>
+<div style="font-weight:700;font-size:18px">{{ ai.name }}</div><div style="font-size:13px;font-weight:700;color:{{ ai.tagColor }}">{{ ai.tag }}</div>
+</div>
+<sc-if value="{{ ai.isCredit }}"><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+<div style="display:flex;align-items:center;border:2px solid {{ ai.borderColor }};border-radius:8px;overflow:hidden;background:#fff">
+<button onClick="{{ ai.minus }}" style="font:inherit;font-size:20px;width:42px;height:44px;border:0;background:#EAF4F2;color:#0B4F57;cursor:pointer">−</button>
+<span style="padding-left:10px;color:#4A6572">S/</span>
+<input type="number" step="500" value="{{ ai.amount }}" onChange="{{ ai.onInput }}" style="width:100px;border:0;font-family:Cambria, Caladea, Georgia, serif;font-size:22px;font-weight:700;padding:6px;outline:none;text-align:right;color:{{ ai.amountColor }};background:transparent">
+<button onClick="{{ ai.plus }}" style="font:inherit;font-size:20px;width:42px;height:44px;border:0;background:#EAF4F2;color:#0B4F57;cursor:pointer">+</button>
+</div>
+<div style="font-size:13px;font-weight:700;color:{{ ai.hintColor }}">{{ ai.hint }}</div>
+</div></sc-if>
+<button onClick="{{ ai.remove }}" aria-label="Quitar producto" title="Quitar producto" style="font:inherit;width:40px;height:40px;border-radius:8px;border:1.5px solid #B5C7CE;background:#fff;color:#4A6572;cursor:pointer;flex:none" style-hover="border-color:#C2410C;color:#C2410C"><i class="fa-solid fa-trash-can"></i></button>
+</div></sc-for>
+<sc-if value="{{ pd.canAdd }}"><button onClick="{{ pd.openAdd }}" style="margin-top:12px;width:100%;font:inherit;font-size:16px;font-weight:700;padding:10px 12px;border-radius:10px;border:1.5px dashed #007F73;background:#fff;color:#007F73;cursor:pointer" style-hover="background:#F4FAF8">+ Agregar producto</button></sc-if>
+<sc-if value="{{ pd.hasError }}"><div style="margin-top:14px;background:#FCEEE7;border:1.5px solid #C2410C;border-radius:10px;padding:12px 16px;display:flex;gap:10px;align-items:flex-start"><i class="fa-solid fa-triangle-exclamation" style="color:#C2410C;margin-top:4px"></i><div><div style="font-weight:700">No se puede aprobar</div><sc-for list="{{ pd.errors }}" as="er"><div style="font-size:15px">{{ er }}</div></sc-for></div></div></sc-if>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:16px">
+<label style="font-size:13px;font-weight:700;color:#4A6572;text-transform:uppercase;letter-spacing:.06em">Comentarios</label>
+<textarea value="{{ pd.comment }}" onChange="{{ pd.onComment }}" rows="2" placeholder="Por qué aceptas, ajustas o rechazas esta oferta" style="font:inherit;font-size:16px;padding:10px 12px;border-radius:8px;border:1px solid #B5D3CC;resize:vertical;color:#0F2A2E"></textarea>
+<span style="font-size:13px;color:#4A6572">Se guarda con la decisión para análisis posteriores.</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center">
+<button onClick="{{ pd.approve }}" style="font:inherit;font-size:18px;font-weight:700;padding:12px 22px;border:0;border-radius:10px;background:#007F73;color:#fff;cursor:pointer;display:flex;gap:8px;align-items:center" style-hover="background:#0B4F57"><i class="fa-solid fa-check"></i>Aprobar oferta</button>
+<button onClick="{{ pd.reject }}" style="font:inherit;font-size:18px;font-weight:700;padding:12px 22px;border:1.5px solid #4A6572;border-radius:10px;background:#fff;color:#4A6572;cursor:pointer;display:flex;gap:8px;align-items:center" style-hover="background:#EEF2F3"><i class="fa-solid fa-xmark"></i>Rechazar</button>
+<span style="font-size:14px;color:#4A6572;display:flex;gap:6px;align-items:center"><i class="fa-solid fa-user-tie" style="color:#9A6A00"></i>Tú decides</span>
+</div>
+</div></sc-if>
+<sc-if value="{{ pd.isApproved }}"><div style="padding:16px 0 0;display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:8px;align-items:center;font-weight:700;color:#007F73;font-size:17px"><i class="fa-solid fa-circle-check"></i>Oferta aprobada</div><sc-for list="{{ pd.approvedList }}" as="ap"><div style="background:#EAF4F2;border-radius:8px;padding:8px 12px;font-weight:700;font-size:17px">{{ ap }}</div></sc-for></div></sc-if>
+<sc-if value="{{ pd.showComment }}"><div style="margin-top:10px;font-size:15px;color:#4A6572;display:flex;gap:8px;align-items:flex-start"><i class="fa-regular fa-comment" style="margin-top:4px"></i><span><b style="color:#0F2A2E">Comentario:</b> {{ pd.comment }}</span></div></sc-if>
+<sc-if value="{{ pd.isRejected }}"><div style="padding:16px 0 0;color:#4A6572;font-size:17px;display:flex;gap:8px;align-items:center"><i class="fa-solid fa-xmark"></i>Rechazaste la oferta. No se genera ficha.</div></sc-if>
+</div>
+</div>
+
+<div style="border:1px solid #D7E7E3;border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;border-bottom:1px solid #D7E7E3">
+<button onClick="{{ pd.tabVC }}" style="flex:1;font:inherit;font-size:16px;font-weight:700;padding:12px;border:0;border-bottom:3px solid {{ pd.vcLine }};background:#fff;color:#007F73;cursor:pointer;display:flex;gap:8px;align-items:center;justify-content:center"><i class="fa-solid fa-bullseye"></i>Venta cruzada</button>
+<button onClick="{{ pd.tabRisk }}" style="flex:1;font:inherit;font-size:16px;font-weight:700;padding:12px;border:0;border-bottom:3px solid {{ pd.riskLine }};background:#fff;color:#C2410C;cursor:pointer;display:flex;gap:8px;align-items:center;justify-content:center"><i class="fa-solid fa-shield-halved"></i>Riesgo</button>
+</div>
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;background:#FBFDFC">
+<sc-for list="{{ pd.chat }}" as="m"><div style="display:flex;justify-content:{{ m.justify }}"><div style="max-width:88%;background:{{ m.bg }};color:#0F2A2E;border-radius:10px;padding:10px 14px;font-size:16px;display:flex;flex-direction:column;gap:4px"><sc-for list="{{ m.lines }}" as="ln"><div style="text-wrap:pretty">{{ ln }}</div></sc-for></div></div></sc-for>
+</div>
+<div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:8px;border-top:1px solid #EAF4F2">
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ pd.chips }}" as="ch"><button onClick="{{ ch.ask }}" style="font:inherit;font-size:14px;padding:4px 11px;border-radius:14px;border:1px solid #B5D3CC;background:#fff;color:#0B4F57;cursor:pointer" style-hover="background:#EAF4F2">{{ ch.text }}</button></sc-for></div>
+<div style="display:flex;gap:8px">
+<input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onDraftKey }}" placeholder="{{ pd.placeholder }}" style="flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:8px;border:1px solid #B5D3CC">
+<button onClick="{{ send }}" aria-label="Enviar" style="font:inherit;width:46px;border:0;border-radius:8px;background:{{ pd.sendBg }};color:#fff;cursor:pointer;font-size:16px"><i class="fa-solid fa-paper-plane"></i></button>
+</div>
+<sc-if value="{{ st }}"><code style="align-self:flex-start;font:11px ui-monospace, Menlo, monospace;color:#0B4F57">st.tabs · st.chat_message · st.chat_input</code></sc-if>
+</div>
+</div>
+</div>
+
+<sc-if value="{{ pd.briefLoading }}"><div style="display:flex;gap:10px;align-items:center;color:#4A6572;font-size:17px"><i class="fa-solid fa-circle-notch fa-spin" style="color:#007F73"></i>El agente Visita está preparando la ficha…</div></sc-if>
+<sc-if value="{{ pd.hasBrief }}">
+<div style="border:1px solid #D7E7E3;border-radius:10px;overflow:hidden">
+<div style="background:#EAF4F2;padding:14px 20px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline"><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:22px;font-weight:700">Ficha de visita</span><span style="font-size:16px;color:#4A6572">{{ pd.brief.resumen }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;padding:20px">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700;font-size:17px">Puntos de conversación</div><sc-for list="{{ pd.brief.talking }}" as="tp"><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:#007F73;color:#fff;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ tp.n }}</div><div style="font-size:16px">{{ tp.text }}</div></div></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700;font-size:17px">Objeciones probables</div><sc-for list="{{ pd.brief.objeciones }}" as="ob"><div style="background:#F4FAF8;border-radius:8px;padding:10px 14px"><div style="font-weight:700;font-size:16px">“{{ ob.q }}”</div><div style="font-size:15px;margin-top:2px">{{ ob.a }}</div></div></sc-for></div>
+</div>
+<div style="background:#FDF1D6;border-top:1px solid #F2B134;padding:12px 20px;display:flex;gap:10px;align-items:center;font-size:17px"><i class="fa-solid fa-arrow-right" style="color:#9A6A00"></i><b>Siguiente paso:</b><span>{{ pd.brief.next }}</span></div>
+</div>
+</sc-if>
+</sc-if>
+
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1px solid #D7E7E3;padding-top:22px"><h3 style="margin:0;font-family:Cambria, Caladea, Georgia, serif;font-size:26px;font-weight:700">Perfil del cliente</h3></div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+<div style="background:#EAF4F2;border-radius:10px;padding:16px"><div style="font-size:13px;font-weight:700;color:#4A6572;text-transform:uppercase;letter-spacing:.06em">Cliente del banco</div><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:32px;font-weight:700;line-height:1.1;margin-top:4px">{{ dt.bankYears }} años</div><div style="color:#4A6572;font-size:15px">Desde {{ dt.sinceBank }} · {{ pd.segment }}</div></div>
+<div style="background:#EAF4F2;border-radius:10px;padding:16px"><div style="font-size:13px;font-weight:700;color:#4A6572;text-transform:uppercase;letter-spacing:.06em">En el sistema financiero</div><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:32px;font-weight:700;line-height:1.1;margin-top:4px">{{ dt.sysYears }} años</div><div style="color:#4A6572;font-size:15px">Desde {{ dt.sinceSys }}</div></div>
+<div style="background:#EAF4F2;border-radius:10px;padding:16px"><div style="font-size:13px;font-weight:700;color:#4A6572;text-transform:uppercase;letter-spacing:.06em">Principalidad</div><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:32px;font-weight:700;line-height:1.1;margin-top:4px;color:#007F73">{{ dt.share }}</div><div style="height:8px;border-radius:4px;background:#fff;margin-top:8px;overflow:hidden"><div style="height:100%;width:{{ dt.shareW }};background:#007F73"></div></div><div style="color:#4A6572;font-size:14px;margin-top:6px">De su deuda y ahorro está en el banco</div></div>
+<div style="background:#EAF4F2;border-radius:10px;padding:16px"><div style="font-size:13px;font-weight:700;color:#4A6572;text-transform:uppercase;letter-spacing:.06em">Mora · 12 meses</div><div style="display:flex;gap:10px;align-items:center;margin-top:4px"><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:32px;font-weight:700;line-height:1.1">{{ dt.lateMax }} días</span><span style="background:{{ dt.sbsBg }};color:{{ dt.sbsFg }};font-weight:700;font-size:13px;padding:3px 8px;border-radius:6px">{{ dt.sbs }}</span></div><div style="color:#4A6572;font-size:15px">Atraso máximo · {{ dt.onTime }} de meses al día</div></div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:20px">
+<div style="border:1px solid #D7E7E3;border-radius:10px;padding:18px 20px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:21px;font-weight:700">Histórico de crédito · 24 meses</div><div style="display:flex;gap:12px;font-size:14px;color:#4A6572"><span style="display:flex;gap:5px;align-items:center"><span style="width:10px;height:10px;border-radius:2px;background:#007F73"></span>Banco</span><span style="display:flex;gap:5px;align-items:center"><span style="width:10px;height:10px;border-radius:2px;background:#B5C7CE"></span>Otras entidades</span></div></div>
+<sc-if value="{{ dt.hasDebt }}"><div>
+<div style="font-size:13px;color:#4A6572;margin:10px 0 4px">Máx. {{ dt.dMax }}</div>
+<div style="height:150px;display:flex;align-items:flex-end;gap:3px;border-bottom:1px solid #D7E7E3">
+<sc-for list="{{ dt.debtBars }}" as="b"><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="height:{{ b.hOther }};background:#B5C7CE;border-radius:2px 2px 0 0"></div><div style="height:{{ b.hBank }};background:#007F73"></div></div></sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:13px;color:#4A6572;margin-top:4px"><sc-for list="{{ dt.axis }}" as="ax"><span>{{ ax }}</span></sc-for></div>
+</div></sc-if>
+<sc-if value="{{ dt.noDebt }}"><div style="height:150px;display:flex;align-items:center;justify-content:center;color:#4A6572;font-size:16px;background:#F4FAF8;border-radius:8px;margin-top:10px">Sin deuda en el sistema financiero</div></sc-if>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;font-size:15px;flex-wrap:wrap;gap:4px"><span>Deuda total <b>{{ dt.debt }}</b> · en el banco {{ dt.debtBank }}</span><span style="color:#4A6572">Capacidad {{ dt.capacity }}</span></div>
+<div style="height:10px;border-radius:5px;background:#EAF4F2;overflow:hidden"><div style="height:100%;width:{{ dt.debtW }};background:#0B4F57"></div></div>
+<div style="font-size:14px;color:#4A6572">Disponible según política (6 × ingreso): <b style="color:#007F73">{{ dt.available }}</b></div>
+</div>
+</div>
+<div style="border:1px solid #D7E7E3;border-radius:10px;padding:18px 20px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><div style="font-family:Cambria, Caladea, Georgia, serif;font-size:21px;font-weight:700">Histórico de ahorro · 24 meses</div><sc-if value="{{ dt.hasSav }}"><div style="font-size:15px">Saldo hoy <b style="font-family:Cambria, Caladea, Georgia, serif;font-size:19px;color:#007F73">{{ dt.savNow }}</b></div></sc-if></div>
+<sc-if value="{{ dt.hasSav }}"><div>
+<div style="font-size:13px;color:#4A6572;margin:10px 0 4px">Máx. {{ dt.savMax }}</div>
+<svg viewBox="0 0 480 120" preserveAspectRatio="none" style="width:100%;height:150px;display:block;border-bottom:1px solid #D7E7E3"><path d="{{ dt.savArea }}" fill="#EAF4F2"></path><path d="{{ dt.savLine }}" fill="none" stroke="#007F73" stroke-width="2.5" vector-effect="non-scaling-stroke"></path></svg>
+<div style="display:flex;justify-content:space-between;font-size:13px;color:#4A6572;margin-top:4px"><sc-for list="{{ dt.axis }}" as="ax"><span>{{ ax }}</span></sc-for></div>
+</div></sc-if>
+<sc-if value="{{ dt.noSav }}"><div style="height:150px;display:flex;align-items:center;justify-content:center;color:#4A6572;font-size:16px;background:#F4FAF8;border-radius:8px;margin-top:10px">Sin cuenta de ahorro en el banco</div></sc-if>
+<div style="margin-top:16px">
+<div style="font-size:15px;margin-bottom:6px">Días de atraso por mes · últimos 12</div>
+<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px"><sc-for list="{{ dt.mora }}" as="mo"><div style="display:flex;flex-direction:column;gap:2px;align-items:center"><div style="width:100%;height:30px;border-radius:4px;background:{{ mo.bg }};color:{{ mo.fg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">{{ mo.v }}</div><span style="font-size:11px;color:#4A6572">{{ mo.m }}</span></div></sc-for></div>
+</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:20px">
+<div style="border:1px solid #D7E7E3;border-radius:10px;padding:18px 20px">
+<div style="font-family:Cambria, Caladea, Georgia, serif;font-size:21px;font-weight:700;margin-bottom:8px">Productos del banco</div>
+<sc-for list="{{ dt.products }}" as="pr"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #EAF4F2">
+<div style="display:flex;gap:10px;align-items:center"><sc-if value="{{ pr.has }}"><i class="fa-solid fa-circle-check" style="color:#007F73;font-size:18px"></i></sc-if><sc-if value="{{ pr.notHas }}"><i class="fa-regular fa-circle" style="color:#B5C7CE;font-size:18px"></i></sc-if><span style="font-size:17px;font-weight:700">{{ pr.name }}</span></div>
+<sc-if value="{{ pr.has }}"><span style="font-size:15px;color:#4A6572">Desde {{ pr.since }}</span></sc-if>
+<sc-if value="{{ pr.isElig }}"><span style="font-size:13px;font-weight:700;padding:2px 8px;border-radius:6px;border:1.5px solid #007F73;color:#006157">Elegible</span></sc-if>
+<sc-if value="{{ pr.notElig }}"><span style="font-size:14px;color:#4A6572">No elegible hoy</span></sc-if>
+</div></sc-for>
+</div>
+<div style="border:1px solid #D7E7E3;border-radius:10px;padding:18px 20px">
+<div style="font-family:Cambria, Caladea, Georgia, serif;font-size:21px;font-weight:700;margin-bottom:12px">Comportamiento desde su ingreso</div>
+<sc-for list="{{ dt.timeline }}" as="ev"><div style="display:flex;gap:14px;align-items:stretch">
+<div style="display:flex;flex-direction:column;align-items:center;width:14px;flex:none"><div style="width:12px;height:12px;border-radius:50%;background:{{ ev.dot }};margin-top:5px"></div><div style="flex:1;width:2px;background:#D7E7E3"></div></div>
+<div style="padding-bottom:14px"><div style="font-size:14px;font-weight:700;color:#4A6572;font-variant-numeric:tabular-nums">{{ ev.d }}</div><div style="font-size:17px">{{ ev.text }}</div></div>
+</div></sc-for>
+</div>
+</div>
+
+<div style="background:#0B4F57;color:#fff;border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-wrap:wrap;gap:10px 20px;align-items:baseline;justify-content:space-between">
+<div style="font-family:Cambria, Caladea, Georgia, serif;font-size:24px;font-weight:700">Intereses y productos con alta probabilidad</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ dt.interests }}" as="in"><span style="font-size:14px;padding:3px 10px;border-radius:14px;background:rgba(143,211,196,.18);color:#8FD3C4;font-weight:700">{{ in }}</span></sc-for></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+<sc-for list="{{ dt.recs }}" as="rc"><div style="background:#fff;color:#0F2A2E;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-size:14px;font-weight:700;color:#0B4F57">{{ rc.brand }}</span><sc-if value="{{ rc.isBank }}"><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:#007F73;color:#fff">BANCO</span></sc-if><sc-if value="{{ rc.isEco }}"><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:#F2B134;color:#0F2A2E">ECOSISTEMA</span></sc-if></div>
+<div style="font-size:18px;font-weight:700;line-height:1.25">{{ rc.product }}</div>
+<div style="display:flex;align-items:center;gap:10px"><div style="flex:1;height:8px;border-radius:4px;background:#EAF4F2;overflow:hidden"><div style="height:100%;width:{{ rc.probW }};background:{{ rc.bar }}"></div></div><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:22px;font-weight:700">{{ rc.prob }}</span></div>
+<div style="font-size:15px;color:#4A6572;text-wrap:pretty">{{ rc.why }}</div>
+</div></sc-for>
+</div>
+<div style="font-size:14px;color:#B9D3CE">Probabilidad estimada con datos sintéticos. Las marcas del ecosistema son un ejemplo ilustrativo de alianzas, sin acuerdo comercial.</div>
+</div>
+
+</div>
+</div>
+<sc-if value="{{ pd.addOpen }}">
+<div onClick="{{ pd.closeAdd }}" style="position:fixed;inset:0;z-index:60;background:rgba(15,42,46,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+<div onClick="{{ stop }}" style="width:min(900px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 12px 32px rgba(15,42,46,.25)">
+<div style="display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline"><span style="font-family:Cambria, Caladea, Georgia, serif;font-size:22px;font-weight:700">Agregar producto</span><span style="font-size:15px;color:#4A6572;flex:1">Para {{ dt.name }}</span><button onClick="{{ pd.closeAdd }}" aria-label="Cerrar" style="font:inherit;font-size:18px;width:40px;height:40px;border:1.5px solid #B5C7CE;border-radius:8px;background:#fff;color:#4A6572;cursor:pointer"><i class="fa-solid fa-xmark"></i></button></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:20px">
+<div style="display:flex;flex-direction:column">
+<div style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#007F73;padding-bottom:6px">DEL BANCO</div>
+<sc-for list="{{ pd.bankCatalog }}" as="cp"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #EAF4F2">
+<div><div style="font-weight:700;font-size:17px">{{ cp.name }}</div><div style="font-size:14px;color:#4A6572">{{ cp.note }}</div></div>
+<sc-if value="{{ cp.has }}"><span style="font-size:13px;color:#4A6572;white-space:nowrap">Ya lo tiene</span></sc-if>
+<sc-if value="{{ cp.inList }}"><span style="font-size:13px;font-weight:700;color:#007F73;white-space:nowrap"><i class="fa-solid fa-check"></i> En la oferta</span></sc-if>
+<sc-if value="{{ cp.canAdd }}"><button onClick="{{ cp.add }}" style="font:inherit;font-size:14px;font-weight:700;padding:6px 12px;border-radius:8px;border:1.5px solid #007F73;background:#fff;color:#007F73;cursor:pointer;white-space:nowrap" style-hover="background:#EAF4F2">+ Agregar</button></sc-if>
+</div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#9A6A00;padding-bottom:6px">DE ALIADOS</div>
+<sc-for list="{{ pd.allyCatalog }}" as="cp"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #EAF4F2">
+<div><div style="font-weight:700;font-size:17px">{{ cp.name }}</div><div style="font-size:14px;color:#4A6572;display:flex;gap:8px;flex-wrap:wrap"><span>{{ cp.brand }}</span><sc-if value="{{ cp.hasAff }}"><span style="font-weight:700;color:#0B4F57">· {{ cp.aff }}</span></sc-if></div></div>
+<sc-if value="{{ cp.inList }}"><span style="font-size:13px;font-weight:700;color:#007F73;white-space:nowrap"><i class="fa-solid fa-check"></i> En la oferta</span></sc-if>
+<sc-if value="{{ cp.canAdd }}"><button onClick="{{ cp.add }}" style="font:inherit;font-size:14px;font-weight:700;padding:6px 12px;border-radius:8px;border:1.5px solid #F2B134;background:#fff;color:#0F2A2E;cursor:pointer;white-space:nowrap" style-hover="background:#FDF1D6">+ Agregar</button></sc-if>
+</div></sc-for>
+<div style="font-size:13px;color:#4A6572;padding-top:8px">Aliados de ejemplo, sin acuerdo comercial.</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;autoStart&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Analizar cartera al abrir&quot;},&quot;revealSpeed&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rápida&quot;,&quot;Demo&quot;,&quot;Lenta&quot;],&quot;default&quot;:&quot;Demo&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Ritmo de los agentes&quot;},&quot;simulateAgentError&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Simular fallo de Riesgo en C05&quot;},&quot;projector&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Modo proyector&quot;},&quot;showStreamlitNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Mostrar notas de Streamlit&quot;}}">
+const CAT = {
+  credito_capital_trabajo: { name: 'Crédito capital de trabajo', short: 'Capital de trabajo', type: 'credito', min: 1000, max: 50000, margin: 600 },
+  credito_activo_fijo: { name: 'Crédito activo fijo', short: 'Activo fijo', type: 'credito', min: 5000, max: 80000, margin: 800 },
+  seguro_negocio: { name: 'Seguro de negocio', short: 'Seguro', type: 'seguro', margin: 150 },
+  cuenta_ahorro: { name: 'Cuenta de ahorro', short: 'Ahorro', type: 'ahorro', margin: 60 },
+  cobro_qr: { name: 'Cobro con QR', short: 'Cobro QR', type: 'pagos', margin: 120 }
+};
+const IDS = Object.keys(CAT);
+const ALLY = {
+  pac_multirriesgo: { name: 'Seguro multirriesgo Pyme', short: 'Multirriesgo', brand: 'Pacífico Seguros', type: 'aliado', margin: 90 },
+  pac_vehicular: { name: 'Seguro vehicular', short: 'Seguro vehicular', brand: 'Pacífico Seguros', type: 'aliado', margin: 90 },
+  pac_salud: { name: 'Seguro de salud para emprendedores', short: 'Seguro de salud', brand: 'Pacífico Seguros', type: 'aliado', margin: 70 },
+  yape_negocio: { name: 'Cobros con Yape para negocio', short: 'Yape negocio', brand: 'Yape', type: 'aliado', margin: 40 },
+  tyba_fondo: { name: 'Fondo de inversión de corto plazo', short: 'Fondo Tyba', brand: 'Tyba', type: 'aliado', margin: 50 }
+};
+const ALLY_IDS = Object.keys(ALLY);
+Object.assign(CAT, ALLY); // IDS sigue siendo solo productos del banco
+const CT = 'credito_capital_trabajo', AF = 'credito_activo_fijo', SG = 'seguro_negocio', AH = 'cuenta_ahorro', QR = 'cobro_qr';
+const SEED = {
+  C01: { name: 'Rosa Huamán', business: 'Taller de confección', district: 'La Victoria', income: 3000, debt: 6000, late: 3, products: [CT, AH], signals: ['Cotizó una remalladora industrial de S/ 20,000', 'Cobra a clientes mayoristas por transferencia y QR de otros bancos', 'Su maquinaria no tiene seguro'] },
+  C02: { name: 'Jorge Mamani', business: 'Bodega', district: 'San Juan de Lurigancho', income: 1500, debt: 0, late: 0, products: [AH, QR], signals: ['Sus ventas suben en diciembre', 'Paga a proveedores en efectivo', 'Su local no tiene seguro'] },
+  C03: { name: 'Lucía Torres', business: 'Restaurante', district: 'Surquillo', income: 4000, debt: 10000, late: 25, products: [CT], signals: ['Atrasos recientes por una obra frente al local', 'Quiere ampliar la cocina', 'Su local no tiene seguro contra incendio'] },
+  C04: { name: 'Pedro Salazar', business: 'Ferretería', district: 'Los Olivos', income: 6000, debt: 30000, late: 0, products: [AF, AH, SG], signals: ['Compra cemento y fierro antes de la temporada de obras', 'Sus clientes le piden pagar con QR'] },
+  C05: { name: 'Ana Flores', business: 'Salón de belleza', district: 'Miraflores', income: 2500, debt: 14000, late: 5, products: [AH], signals: ['Compra insumos para la campaña de fiestas', 'Sus equipos de peluquería no tienen seguro', 'Cobra en efectivo y con billeteras digitales'] },
+  C06: { name: 'Luis Rojas', business: 'Taller mecánico', district: 'Comas', income: 2000, debt: 12000, late: 10, products: [AF], signals: ['Su deuda ya está al tope de su capacidad', 'Su taller no tiene seguro', 'Guarda el efectivo del día en el local'] },
+  C07: { name: 'Carmen Díaz', business: 'Abarrotes al por mayor', district: 'La Victoria', income: 5000, debt: 5000, late: 0, products: [CT, AH, QR, SG], signals: ['Quiere comprar un segundo camión de reparto', 'Paga puntual hace tres años'] },
+  C08: { name: 'Miguel Paredes', business: 'Carpintería', district: 'Villa El Salvador', income: 2800, debt: 3000, late: 18, products: [AH, CT], signals: ['Cotizó una cepilladora industrial', 'Tuvo un atraso de 18 días en marzo'] },
+  C09: { name: 'Sofía Ramos', business: 'Tienda de ropa', district: 'La Victoria', income: 3500, debt: 20000, late: 2, products: [CT, SG, QR], signals: ['Deja el efectivo de la tienda en caja', 'Vende más los fines de semana'] },
+  C10: { name: 'Raúl Chávez', business: 'Imprenta', district: 'Breña', income: 4500, debt: 8000, late: 0, products: [AF, CT, AH], signals: ['Sus máquinas no tienen seguro', 'Sus clientes corporativos piden pagar con QR'] }
+};
+const FAKE = {
+  C01: { pitch: 'Financiar la remalladora y proteger el taller.', items: [{ pid: AF, amount: 20000, reason: 'Cotizó una remalladora industrial de S/ 20,000.' }, { pid: SG, amount: null, reason: 'Su maquinaria no tiene seguro.' }] },
+  C02: { pitch: 'Más stock para diciembre y el local protegido.', items: [{ pid: CT, amount: 10000, reason: 'Sus ventas suben en diciembre.' }, { pid: SG, amount: null, reason: 'Su local no tiene seguro.' }] },
+  C03: { pitch: 'Ampliar la cocina y asegurar el local.', items: [{ pid: AF, amount: 15000, reason: 'Quiere ampliar la cocina.' }, { pid: SG, amount: null, reason: 'Su local no tiene seguro contra incendio.' }] },
+  C04: { pitch: 'Stock para la temporada de obras y cobros con QR.', items: [{ pid: CT, amount: 7000, reason: 'Compra cemento y fierro antes de la temporada de obras.' }, { pid: QR, amount: null, reason: 'Sus clientes le piden pagar con QR.' }] },
+  C05: { pitch: 'Insumos para fiestas y equipos protegidos.', items: [{ pid: CT, amount: 2000, reason: 'Compra insumos para la campaña de fiestas.' }, { pid: SG, amount: null, reason: 'Sus equipos de peluquería no tienen seguro.' }] },
+  C06: { pitch: 'Proteger el taller y ordenar su efectivo.', items: [{ pid: SG, amount: null, reason: 'Su taller no tiene seguro.' }, { pid: AH, amount: null, reason: 'Guarda el efectivo del día en el local.' }] },
+  C07: { pitch: 'Financiar el segundo camión de reparto.', items: [{ pid: AF, amount: 26000, reason: 'Quiere comprar un segundo camión de reparto.' }] },
+  C08: { pitch: 'Financiar la cepilladora.', items: [{ pid: AF, amount: 8000, reason: 'Cotizó una cepilladora industrial.' }] },
+  C09: { pitch: 'Guardar el efectivo de la tienda en el banco.', items: [{ pid: AH, amount: null, reason: 'Deja el efectivo de la tienda en caja.' }] },
+  C10: { pitch: 'Proteger las máquinas y cobrar con QR.', items: [{ pid: SG, amount: null, reason: 'Sus máquinas no tienen seguro.' }, { pid: QR, amount: null, reason: 'Sus clientes corporativos piden pagar con QR.' }] }
+};
+const RISK_C01 = { [AF]: 'Con S/ 20,000 su deuda superaría 6 veces su ingreso mensual. Máximo sano: S/ 12,000.', [SG]: 'No tiene seguro de negocio. No suma deuda.' };
+const PROFILE = {
+  C01: { sys: 2012, bank: 2018, share: .65, sav: 3800, since: { [CT]: '2018-03', [AH]: '2019-07' }, interests: ['Ampliar la producción', 'Digitalizar cobros a mayoristas', 'Proteger su maquinaria'],
+    recs: [{ b: 'Mibanco', p: 'Crédito activo fijo', prob: 92, why: 'Cotizó una remalladora industrial de S/ 20,000.' }, { b: 'Pacífico Seguros', p: 'Seguro multirriesgo para el taller', prob: 84, why: 'Su maquinaria no tiene seguro y es su única fuente de ingreso.' }, { b: 'Yape', p: 'Cobros con QR para negocio', prob: 78, why: 'Ya cobra con QR de otros bancos; concentrar cobros le da historial.' }, { b: 'Tyba', p: 'Fondo de corto plazo', prob: 41, why: 'Mantiene un saldo de ahorro estable sobre S/ 3,000.' }] },
+  C02: { sys: 2020, bank: 2020, share: .8, sav: 1500, since: { [AH]: '2020-02', [QR]: '2023-06' }, interests: ['Stock para la campaña navideña', 'Pagar a proveedores sin efectivo'],
+    recs: [{ b: 'Mibanco', p: 'Crédito capital de trabajo', prob: 88, why: 'Sus ventas suben en diciembre y no tiene deuda en el sistema.' }, { b: 'Pacífico Seguros', p: 'Seguro para bodega', prob: 70, why: 'Local sin seguro y mercadería de alta rotación.' }, { b: 'Yape', p: 'Pagos a proveedores', prob: 66, why: 'Paga en efectivo; reduce el riesgo de robo.' }] },
+  C03: { sys: 2010, bank: 2021, share: .4, sav: 0, since: { [CT]: '2021-09' }, interests: ['Ampliar la cocina', 'Recuperar el flujo tras la obra'],
+    recs: [{ b: 'Pacífico Seguros', p: 'Seguro contra incendio', prob: 81, why: 'Cocina industrial sin seguro.' }, { b: 'Mibanco', p: 'Reprogramación de cuotas', prob: 74, why: 'Atraso de 25 días por la obra frente al local.' }, { b: 'Yape', p: 'Cobros con QR en mesa', prob: 63, why: 'Muchos pagos pequeños en efectivo.' }] },
+  C04: { sys: 2008, bank: 2015, share: .55, sav: 9500, since: { [AF]: '2016-04', [AH]: '2015-08', [SG]: '2017-01' }, interests: ['Stock para la temporada de obras', 'Cobros digitales'],
+    recs: [{ b: 'Yape', p: 'Cobros con QR para negocio', prob: 86, why: 'Sus clientes le piden pagar con QR.' }, { b: 'Mibanco', p: 'Crédito capital de trabajo', prob: 80, why: 'Compra cemento y fierro antes de la temporada.' }, { b: 'Tyba', p: 'Fondo para excedentes', prob: 58, why: 'Saldo promedio de ahorro sobre S/ 9,000.' }] },
+  C05: { sys: 2016, bank: 2022, share: .3, sav: 1200, since: { [AH]: '2022-05' }, interests: ['Campaña de fiestas', 'Proteger sus equipos'],
+    recs: [{ b: 'Pacífico Seguros', p: 'Seguro de equipos', prob: 82, why: 'Sus equipos de peluquería no tienen seguro.' }, { b: 'Mibanco', p: 'Crédito capital de trabajo', prob: 75, why: 'Compra insumos para la campaña de fiestas.' }, { b: 'Yape', p: 'Cobros con QR para negocio', prob: 71, why: 'Ya cobra con billeteras digitales.' }] },
+  C06: { sys: 2013, bank: 2019, share: .7, sav: 0, since: { [AF]: '2019-11' }, interests: ['Ordenar su efectivo', 'Proteger el taller'],
+    recs: [{ b: 'Pacífico Seguros', p: 'Seguro para taller', prob: 77, why: 'Su taller no tiene seguro.' }, { b: 'Mibanco', p: 'Cuenta de ahorro', prob: 72, why: 'Guarda el efectivo del día en el local.' }, { b: 'Yape', p: 'Cobros con QR para negocio', prob: 60, why: 'Sus clientes pagan en efectivo.' }] },
+  C07: { sys: 2005, bank: 2012, share: .85, sav: 18000, since: { [CT]: '2012-06', [AH]: '2012-06', [SG]: '2014-10', [QR]: '2022-03' }, interests: ['Crecer su flota de reparto', 'Invertir excedentes'],
+    recs: [{ b: 'Mibanco', p: 'Crédito activo fijo', prob: 90, why: 'Quiere comprar un segundo camión de reparto.' }, { b: 'Pacífico Seguros', p: 'Seguro vehicular', prob: 83, why: 'Su flota de reparto crece.' }, { b: 'Tyba', p: 'Fondo para excedentes', prob: 64, why: 'Saldo de ahorro alto y estable.' }] },
+  C08: { sys: 2017, bank: 2020, share: .5, sav: 900, since: { [AH]: '2020-01', [CT]: '2021-04' }, interests: ['Comprar una cepilladora', 'Ponerse al día con sus cuotas'],
+    recs: [{ b: 'Pacífico Seguros', p: 'Seguro para taller', prob: 68, why: 'Herramientas sin seguro.' }, { b: 'Mibanco', p: 'Asesoría para ponerse al día', prob: 62, why: 'Atraso de 18 días en marzo; el crédito vuelve cuando regularice.' }, { b: 'Yape', p: 'Cobros con QR para negocio', prob: 59, why: 'Cobra a mano a sus clientes.' }] },
+  C09: { sys: 2014, bank: 2018, share: .45, sav: 0, since: { [CT]: '2018-02', [SG]: '2019-05', [QR]: '2023-01' }, interests: ['Guardar el efectivo de la tienda', 'Vender más los fines de semana'],
+    recs: [{ b: 'Mibanco', p: 'Cuenta de ahorro', prob: 79, why: 'Deja el efectivo de la tienda en caja.' }, { b: 'Yape', p: 'Promociones de fin de semana', prob: 60, why: 'Vende más los fines de semana.' }, { b: 'Tyba', p: 'Ahorro programado', prob: 52, why: 'Ingresos estables; aún no ahorra.' }] },
+  C10: { sys: 2009, bank: 2017, share: .6, sav: 6000, since: { [AF]: '2017-05', [AH]: '2017-05', [CT]: '2020-08' }, interests: ['Proteger sus máquinas', 'Cobrar a clientes corporativos'],
+    recs: [{ b: 'Pacífico Seguros', p: 'Seguro para maquinaria', prob: 85, why: 'Sus máquinas no tienen seguro.' }, { b: 'Yape', p: 'Cobros con QR para negocio', prob: 80, why: 'Sus clientes corporativos piden pagar con QR.' }, { b: 'Tyba', p: 'Fondo de corto plazo', prob: 49, why: 'Ahorro estable sobre S/ 5,000.' }] }
+};
+const CIDS = Object.keys(SEED);
+const MES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
+const monthLabel = t => `${MES[(9 + t) % 12]} ${24 + Math.floor((9 + t) / 12)}`;
+const fmt = n => 'S/ ' + Number(n).toLocaleString('en-US');
+const isCredit = pid => CAT[pid] && CAT[pid].type === 'credito';
+const TAGC = { APROBADO: '#007F73', CONTRAOFERTA: '#C2410C', VETO: '#7A1A12' };
+
+function check(c, pid, amount) {
+  const p = CAT[pid];
+  if (!p) return { approved: false, max: 0, reasons: ['producto inexistente'] };
+  if (c.products.includes(pid)) return { approved: false, max: 0, reasons: ['el cliente ya tiene este producto'] };
+  if (p.type !== 'credito') return { approved: true, max: null, reasons: [] };
+  if (c.late > 15) return { approved: false, max: 0, reasons: [`atraso de ${c.late} días en 12 meses (máximo 15)`] };
+  const max = Math.max(0, Math.floor(Math.min(6 * c.income - c.debt, p.max) / 500) * 500);
+  if (max < p.min) return { approved: false, max: 0, reasons: ['sin capacidad de endeudamiento suficiente'] };
+  if (amount == null) return { approved: false, max, reasons: ['falta el monto'] };
+  if (amount < p.min) return { approved: false, max, reasons: [`monto menor al mínimo del producto (${fmt(p.min)})`] };
+  if (amount > max) return { approved: false, max, reasons: [`excede el límite de endeudamiento: máximo ${fmt(max)}`] };
+  return { approved: true, max, reasons: [] };
+}
+const decide = (pid, r) => r.approved ? 'APROBADO' : (isCredit(pid) && r.max > 0 && r.max >= CAT[pid].min ? 'CONTRAOFERTA' : 'VETO');
+function explain(c, pid, d, r, amount) {
+  if (!isCredit(pid)) return 'No lo tiene y no suma deuda. Venta sana.';
+  if (d === 'VETO') return c.late > 15 ? `Tuvo ${c.late} días de atraso en 12 meses; la política permite 15. No se ofrece crédito.` : 'Sin capacidad de endeudamiento suficiente para el monto mínimo.';
+  if (d === 'CONTRAOFERTA') return `Con ${fmt(amount)} su deuda superaría 6 veces su ingreso mensual. Máximo sano: ${fmt(r.max)}.`;
+  return 'Dentro de su capacidad de endeudamiento.';
+}
+// Orquestador: Venta cruzada propone, Riesgo decide con check_policy, el código cierra.
+function pipeline(c, cid) {
+  const offer = FAKE[cid];
+  const kept = offer.items.filter(it => CAT[it.pid] && !c.products.includes(it.pid));
+  const decs = kept.map(it => { const r = check(c, it.pid, it.amount), d = decide(it.pid, r); return { ...it, decision: d, max: r.max, explanation: (cid === 'C01' && RISK_C01[it.pid]) || explain(c, it.pid, d, r, it.amount) }; });
+  const final = decs.filter(d => d.decision !== 'VETO').map(d => d.decision === 'CONTRAOFERTA' ? { ...d, amount: d.max } : d);
+  const contra = decs.find(d => d.decision === 'CONTRAOFERTA'), vetoed = decs.filter(d => d.decision === 'VETO');
+  let closing;
+  if (!final.length) closing = 'No hay oferta viable para este cliente hoy.';
+  else if (contra) closing = `Acepto la contraoferta de Riesgo: ${CAT[contra.pid].name.toLowerCase()} por ${fmt(contra.max)}. Pasa a tu aprobación.`;
+  else if (vetoed.length) closing = `Riesgo vetó ${vetoed.map(v => CAT[v.pid].name.toLowerCase()).join(' y ')}. Sigue ${final.map(f => CAT[f.pid].name.toLowerCase()).join(' y ')}. Pasa a tu aprobación.`;
+  else closing = 'Riesgo aprobó la oferta completa. Pasa a tu aprobación.';
+  return { status: final.length ? 'PENDIENTE' : 'SIN_OFERTA', pitch: offer.pitch, proposed: offer.items, decisions: decs, items: final, closing, vetoes: vetoed.length };
+}
+const SEG = inc => inc >= 4000 ? ['Pequeña empresa', 100] : inc >= 2500 ? ['Micro · alta', 70] : ['Micro', 40];
+const i1Of = (c, pf) => Math.round(50 * pf.share + 30 * Math.min((2026 - pf.bank) / 10, 1) + 0.2 * SEG(c.income)[1]);
+function i2Of(c, pf, res) {
+  if (res.status === 'SIN_OFERTA') return 5;
+  const m = res.items.reduce((s, it) => s + CAT[it.pid].margin, 0), top = Math.max(...pf.recs.map(r => r.prob));
+  return Math.round((Math.min(100, m / 10) * 0.5 + top * 0.3 + res.items.length / 2 * 20) * (c.late > 15 ? 0.6 : 1));
+}
+
+function buildDetail(c, cid) {
+  const pf = PROFILE[cid];
+  const elig = IDS.filter(pid => { if (c.products.includes(pid)) return false; const r = check(c, pid, null); return isCredit(pid) ? r.max >= CAT[pid].min && r.max > 0 : r.approved; });
+  const debtSeries = Array.from({ length: 24 }, (_, t) => Math.max(0, c.debt * (0.55 + 0.45 * t / 23) * (1 + 0.06 * Math.sin(t * 1.3))));
+  const dMax = Math.max(1, ...debtSeries);
+  const hasSav = c.products.includes(AH) && pf.sav > 0;
+  const sav = Array.from({ length: 24 }, (_, t) => pf.sav * (0.7 + 0.3 * t / 23) * ((9 + t) % 12 === 11 ? 1.25 : 1));
+  const sMax = Math.max(1, ...sav);
+  const pts = sav.map((v, t) => `${(t * 480 / 23).toFixed(1)},${(116 - v / sMax * 100).toFixed(1)}`);
+  const mora = Array(12).fill(0);
+  if (c.late > 0) { const i = parseInt(cid.slice(1), 10) % 12; mora[i] = c.late; mora[(i + 5) % 12] = Math.floor(c.late / 3); }
+  const cell = v => v === 0 ? ['#EAF4F2', '#006157'] : v <= 8 ? ['#FDF1D6', '#0F2A2E'] : v <= 15 ? ['#F2B134', '#0F2A2E'] : ['#C2410C', '#FFFFFF'];
+  const sbs = c.late <= 8 ? ['Normal', '#007F73', '#FFFFFF'] : c.late <= 30 ? ['CPP', '#F2B134', '#0F2A2E'] : ['Deficiente', '#C2410C', '#FFFFFF'];
+  const cap = 6 * c.income;
+  const events = [{ d: String(pf.sys), text: 'Primer producto en el sistema financiero', bank: false }];
+  if (pf.bank !== pf.sys) events.push({ d: String(pf.bank), text: 'Ingresa al banco', bank: true }); else events[0].text = 'Ingresa al sistema financiero con el banco';
+  Object.keys(pf.since).sort((a, b) => pf.since[a].localeCompare(pf.since[b])).forEach(p => events.push({ d: pf.since[p].replace('-', '/'), text: `Contrata ${CAT[p].name.toLowerCase()}`, bank: true }));
+  return {
+    id: cid, name: c.name, business: c.business, district: c.district, income: fmt(c.income),
+    sinceBank: pf.bank, bankYears: 2026 - pf.bank, sinceSys: pf.sys, sysYears: 2026 - pf.sys,
+    share: Math.round(pf.share * 100) + '%', shareW: Math.round(pf.share * 100) + '%',
+    sbs: sbs[0], sbsBg: sbs[1], sbsFg: sbs[2], lateMax: c.late, onTime: Math.round(mora.filter(v => v === 0).length / 12 * 100) + '%',
+    debt: fmt(c.debt), debtBank: fmt(Math.round(c.debt * pf.share)), capacity: fmt(cap), available: fmt(Math.max(0, cap - c.debt)), debtW: Math.min(100, Math.round(c.debt / cap * 100)) + '%',
+    hasDebt: c.debt > 0, noDebt: c.debt === 0,
+    debtBars: debtSeries.map(v => ({ hBank: (v * pf.share / dMax * 100).toFixed(1) + '%', hOther: (v * (1 - pf.share) / dMax * 100).toFixed(1) + '%' })),
+    dMax: fmt(Math.round(dMax / 500) * 500), axis: [0, 6, 12, 18, 23].map(monthLabel),
+    hasSav, noSav: !hasSav, savLine: 'M' + pts.join(' L'), savArea: 'M0,120 L' + pts.join(' L') + ' L480,120 Z', savNow: fmt(Math.round(sav[23] / 100) * 100), savMax: fmt(Math.round(sMax / 100) * 100),
+    mora: mora.map((v, i) => ({ v: v ? v + 'd' : '0', m: monthLabel(12 + i).slice(0, 3), bg: cell(v)[0], fg: cell(v)[1] })),
+    products: IDS.map(p => { const has = c.products.includes(p); return { name: CAT[p].name, has, since: has ? (pf.since[p] || '').replace('-', '/') : '', notHas: !has, isElig: !has && elig.includes(p), notElig: !has && !elig.includes(p) }; }),
+    timeline: events.map(e => ({ ...e, dot: e.bank ? '#007F73' : '#4A6572' })),
+    interests: pf.interests,
+    recs: pf.recs.slice().sort((a, b) => b.prob - a.prob).map(r => ({ brand: r.b, product: r.p, prob: r.prob + '%', probW: r.prob + '%', why: r.why, isBank: r.b === 'Mibanco', isEco: r.b !== 'Mibanco', bar: r.prob >= 75 ? '#007F73' : r.prob >= 60 ? '#F2B134' : '#B5C7CE' }))
+  };
+}
+
+function makeBrief(c, cid, approved) {
+  const credit = approved.find(a => isCredit(a.pid));
+  const n = arr => arr.slice(0, 3).map((t, i) => ({ n: i + 1, text: t }));
+  if (cid === 'C01') {
+    const tp = [];
+    if (credit) tp.push(`La remalladora que cotizó sube su producción; el crédito por ${fmt(credit.amount)} cubre la mayor parte.`);
+    if (approved.some(a => a.pid === SG)) tp.push('Su maquinaria no tiene seguro: un robo o un incendio pararía el taller.');
+    tp.push('Ya cobra por QR de otros bancos; más adelante puede concentrar sus cobros aquí.', 'Es puntual: 3 días de atraso máximo en el último año.');
+    return { resumen: 'Taller de confección en La Victoria. Clienta puntual, con capital de trabajo y cuenta de ahorro.', talking: n(tp),
+      objeciones: [credit ? { q: `${fmt(credit.amount)} no me alcanza para la máquina.`, a: 'Financiamos hasta su capacidad sana de pago. La diferencia puede cubrirla con su ahorro o una cuota inicial.' } : { q: 'Prefiero esperar para la máquina.', a: 'Revisamos el crédito en la próxima visita, con su capacidad actualizada.' }, { q: 'El seguro es un gasto extra.', a: 'La prima es baja frente al costo de reponer una máquina de S/ 20,000.' }],
+      next: credit ? 'Llevar la solicitud prellenada y la cotización; agendar el desembolso en 48 horas.' : 'Activar el seguro durante la visita.' };
+  }
+  const tp = c.signals.map(s => s + '.');
+  tp.push(`Hoy tiene ${c.products.length} producto(s) con el banco.`);
+  return { resumen: `${c.business} en ${c.district}. ${c.late <= 15 ? 'Buen historial de pago' : 'Historial con atrasos recientes'}.`, talking: n(tp),
+    objeciones: credit ? [{ q: 'La cuota me preocupa.', a: 'El monto ya está dentro de su capacidad. Elegimos juntos una cuota que calce con sus ventas.' }, { q: 'Ya trabajo con otro banco.', a: 'Tener todo en un lugar le da historial para montos mayores.' }]
+      : [{ q: 'No lo necesito ahora.', a: 'Se activa hoy, sin costo de apertura, y protege lo que ya construyó.' }, { q: 'Ya trabajo con otro banco.', a: 'Tener todo en un lugar le da historial y mejores condiciones.' }],
+    next: credit ? 'Llevar la solicitud prellenada y agendar el desembolso.' : 'Activar el producto durante la visita.' };
+}
+
+function initialChat(res) {
+  return {
+    VC: [{ from: 'agent', lines: [`“${res.pitch}”`, ...res.proposed.map(it => `• ${CAT[it.pid].name}${it.amount != null ? ' por ' + fmt(it.amount) : ''}: ${it.reason}`)] }],
+    RISK: [{ from: 'agent', lines: res.decisions.length ? res.decisions.map(d => `${d.decision} · ${CAT[d.pid].name}: ${d.explanation}`) : ['No hay productos nuevos que evaluar.'] }]
+  };
+}
+function answer(agent, q, c, cid, res) {
+  const t = q.toLowerCase(), pf = PROFILE[cid];
+  const credit = res.decisions.find(d => isCredit(d.pid));
+  if (agent === 'VC') {
+    if (/ecosistema|pac[ií]fico|yape|tyba|grupo/.test(t)) { const eco = pf.recs.filter(r => r.b !== 'Mibanco'); return eco.length ? eco.map(r => `• ${r.b}: ${r.p} (${r.prob}%). ${r.why}`) : ['No veo productos del ecosistema que calcen hoy.']; }
+    if (/otra|alternativa|opci[oó]n/.test(t)) { const r = pf.recs.slice().sort((a, b) => b.prob - a.prob)[1]; return [`Segunda opción: ${r.p} (${r.b}), ${r.prob}% de probabilidad.`, r.why]; }
+    if (/por ?qu[eé]|raz[oó]n/.test(t)) return res.proposed.map(it => `${CAT[it.pid].name}: ${it.reason}`);
+    return ['Anotado como retroalimentación. Ajusto la próxima propuesta para este cliente con tu comentario.'];
+  }
+  if (/15|subir|sube|m[aá]s monto/.test(t)) {
+    if (!credit) return ['Esta oferta no incluye crédito, así que no hay monto que subir.'];
+    const r = check(c, credit.pid, 15000);
+    return r.approved ? ['Con S/ 15,000 la oferta sigue dentro de la política.'] : [`No: con S/ 15,000 ${r.reasons[0]}. Si lo subes en la aprobación, se bloquea.`];
+  }
+  if (/mejorar|cambiar|tendr[ií]a/.test(t)) return c.late > 15 ? ['Mantener 12 meses sin atrasos mayores a 15 días. Con eso el crédito vuelve a evaluarse.'] : ['Reducir su deuda en otras entidades libera capacidad: cada S/ 1,000 que paga suma S/ 1,000 al máximo.'];
+  if (/monto|m[aá]ximo|por ?qu[eé]|capacidad/.test(t)) {
+    if (c.late > 15) return [`El crédito está vetado por atraso: ${c.late} días en 12 meses y la política permite 15.`];
+    const cap = 6 * c.income - c.debt;
+    return [`Capacidad = 6 × ingreso (${fmt(c.income)}) − deuda actual (${fmt(c.debt)}) = ${fmt(Math.max(0, cap))}.`, 'Se redondea hacia abajo a múltiplos de S/ 500. Los productos sin crédito no suman deuda.'];
+  }
+  return ['Anotado como retroalimentación para el modelo de riesgo. La decisión de política no cambia, pero tu comentario queda registrado.'];
+}
+
+const fresh = () => ({ runs: {}, decisions: {}, chats: {}, detail: null, tab: 'VC', draft: '', addOpen: false });
+
+class Component extends DCLogic {
+  state = Object.assign(fresh(), { fallback: false });
+  timers = [];
+  onKey = e => { if (e.key !== 'Escape') return; if (this.state.addOpen) this.setState({ addOpen: false }); else if (this.state.detail) this.setState({ detail: null }); };
+  componentDidMount() { window.addEventListener('keydown', this.onKey); if (this.props.autoStart ?? true) this.startAll(); }
+  componentWillUnmount() { this.clear(); window.removeEventListener('keydown', this.onKey); }
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  factor() { return { 'Rápida': 0.5, 'Demo': 1, 'Lenta': 1.6 }[this.props.revealSpeed] || 1; }
+  setRun(cid, patch) { this.setState(s => ({ runs: { ...s.runs, [cid]: { ...s.runs[cid], ...patch } } })); }
+
+  runOne(cid, i) {
+    const total = (900 + ((i * 37) % 10) * 280) * this.factor();
+    this.setRun(cid, { status: 'running', vc: false, res: null });
+    this.later(() => this.setRun(cid, { vc: true }), total * 0.55);
+    this.later(() => {
+      if (this.props.simulateAgentError && !this.state.fallback && cid === 'C05') { this.setRun(cid, { status: 'error' }); return; }
+      const res = pipeline(SEED[cid], cid);
+      const edits = {};
+      res.items.forEach(it => { edits[it.pid] = { include: true, amount: it.amount }; });
+      this.setState(s => ({ runs: { ...s.runs, [cid]: { status: 'done', vc: true, res } }, decisions: { ...s.decisions, [cid]: { status: res.status, edits, list: res.items.map(it => it.pid), errors: null } }, chats: { ...s.chats, [cid]: initialChat(res) } }));
+    }, total);
+  }
+  startAll = () => { this.clear(); this.setState({ runs: {}, decisions: {}, chats: {} }); CIDS.forEach((cid, i) => this.runOne(cid, i)); };
+  reset = () => { this.clear(); this.setState(s => Object.assign(fresh(), { fallback: s.fallback })); if (this.props.autoStart ?? true) this.later(this.startAll, 50); };
+  toggleFallback = () => this.setState(s => ({ fallback: !s.fallback }));
+
+  setDec(cid, patch) { this.setState(s => ({ decisions: { ...s.decisions, [cid]: { ...s.decisions[cid], ...patch } } })); }
+  setEdit(cid, pid, patch) { const d = this.state.decisions[cid]; this.setDec(cid, { edits: { ...d.edits, [pid]: { ...d.edits[pid], ...patch } }, errors: null }); }
+  approve(cid) {
+    const d = this.state.decisions[cid], res = this.state.runs[cid].res, c = SEED[cid];
+    const incl = d.list.map(pid => ({ pid }));
+    if (!incl.length) { this.setDec(cid, { errors: ['Incluye al menos un producto para aprobar.'] }); return; }
+    if (incl.filter(it => isCredit(it.pid)).length > 1) { this.setDec(cid, { errors: ['Solo se ofrece un crédito por visita: la capacidad de endeudamiento es una sola.'] }); return; }
+    const errs = incl.filter(it => isCredit(it.pid)).map(it => ({ it, r: check(c, it.pid, d.edits[it.pid].amount) })).filter(x => !x.r.approved).map(x => `${CAT[x.it.pid].name}: ${x.r.reasons[0]}.`);
+    if (errs.length) { this.setDec(cid, { errors: errs }); return; }
+    const approved = incl.map(it => ({ pid: it.pid, amount: isCredit(it.pid) ? d.edits[it.pid].amount : null }));
+    this.setDec(cid, { status: 'APROBADA', approved, errors: null, briefLoading: true });
+    this.later(() => this.setDec(cid, { briefLoading: false, brief: makeBrief(c, cid, approved) }), 1100 * this.factor());
+  }
+  send = (text) => {
+    const s = this.state, cid = s.detail, q = (typeof text === 'string' ? text : s.draft).trim();
+    if (!cid || !q || !s.runs[cid] || !s.runs[cid].res) return;
+    const tab = s.tab, ch = s.chats[cid];
+    const withQ = { ...ch, [tab]: [...ch[tab], { from: 'user', lines: [q] }] };
+    this.setState({ draft: '', chats: { ...s.chats, [cid]: withQ } });
+    this.later(() => this.setState(st => { const cc = st.chats[cid]; return { chats: { ...st.chats, [cid]: { ...cc, [tab]: [...cc[tab], { from: 'agent', lines: answer(tab, q, SEED[cid], cid, st.runs[cid].res) }] } } }; }), 600);
+  };
+
+  renderVals() {
+    const s = this.state;
+    const scored = CIDS.map(cid => {
+      const c = SEED[cid], pf = PROFILE[cid], run = s.runs[cid] || { status: 'idle' };
+      const i1 = i1Of(c, pf), done = run.status === 'done', i2 = done ? i2Of(c, pf, run.res) : null;
+      return { cid, c, pf, run, i1, i2, done, final: done ? Math.round(0.4 * i1 + 0.6 * i2) : null };
+    });
+    const prelim = scored.slice().sort((a, b) => b.i1 - a.i1 || a.cid.localeCompare(b.cid)).map(x => x.cid);
+    const order = scored.slice().sort((a, b) => (b.done - a.done) || (a.done ? b.final - a.final : b.i1 - a.i1) || a.cid.localeCompare(b.cid));
+    const doneCount = scored.filter(x => x.done).length;
+    const running = scored.some(x => x.run.status === 'running');
+    let vetoCount = 0, approvedCount = 0, approvedItems = 0;
+    scored.forEach(x => { if (x.done) vetoCount += x.run.res.vetoes; const d = s.decisions[x.cid]; if (d && d.status === 'APROBADA') { approvedCount++; approvedItems += d.approved.length; } });
+    const ST = { PENDIENTE: ['Por aprobar', '#F2B134', '#0F2A2E'], APROBADA: ['Aprobada', '#007F73', '#FFFFFF'], RECHAZADA: ['Rechazada', '#4A6572', '#FFFFFF'], SIN_OFERTA: ['Sin oferta', '#EEF2F3', '#4A6572'] };
+    const rows = order.map((x, i) => {
+      const delta = x.done ? prelim.indexOf(x.cid) - i : 0, d = s.decisions[x.cid], st = d ? ST[d.status] : null;
+      const res = x.run.res;
+      return {
+        pos: i + 1, delta: Math.abs(delta), up: x.done && delta > 0, down: x.done && delta < 0,
+        posBg: x.done && i < 3 ? '#0B4F57' : '#EEF2F3', posFg: x.done && i < 3 ? '#FFFFFF' : '#4A6572',
+        name: x.c.name, business: x.c.business, current: x.c.products.map(p => CAT[p].short), i1: x.i1, share: Math.round(x.pf.share * 100) + '%', segment: SEG(x.c.income)[0],
+        isIdle: x.run.status === 'idle', isRunning: x.run.status === 'running', isError: x.run.status === 'error', isDone: x.done, notDone: !x.done,
+        vcIcon: x.run.vc ? 'fa-solid fa-check' : 'fa-solid fa-circle-notch fa-spin',
+        offer: res ? (res.items.length ? res.items.map(it => CAT[it.pid].short + (it.amount != null ? ' ' + fmt(it.amount) : '')).join(' + ') : 'Sin oferta viable') : '',
+        offerItems: res ? res.decisions.map(dd => { const amt = dd.decision === 'CONTRAOFERTA' ? dd.max : dd.amount; return { label: CAT[dd.pid].short + (amt != null ? ' ' + fmt(amt) : ''), tag: dd.decision, bg: TAGC[dd.decision] }; }) : [],
+        noOffer: !!(res && !res.decisions.length),
+        i2: x.i2, final: x.final,
+        light: x.final > 80 ? '#1E9E5A' : x.final >= 60 ? '#F2B134' : '#C62828',
+        lightBg: x.final > 80 ? '#E3F4EA' : x.final >= 60 ? '#FDF1D6' : '#FBE4E4',
+        lightLabel: x.final > 80 ? 'Alta' : x.final >= 60 ? 'Media' : 'Baja',
+        hasStatus: !!st, status: st ? st[0] : '', stBg: st ? st[1] : '', stFg: st ? st[2] : '',
+        open: () => this.setState({ detail: x.cid, tab: 'VC', draft: '' }),
+        retry: e => { e.stopPropagation(); this.runOne(x.cid, CIDS.indexOf(x.cid)); }
+      };
+    });
+
+    const empty = { debtBars: [], mora: [], products: [], timeline: [], interests: [], recs: [], axis: [] };
+    let dt = empty, pd = { items: [], errors: [], approvedList: [], chat: [], chips: [], brief: { talking: [], objeciones: [] } };
+    if (s.detail) {
+      const cid = s.detail, x = scored.find(y => y.cid === cid), c = SEED[cid], res = x.run.res, d = s.decisions[cid];
+      dt = buildDetail(c, cid);
+      const addPid = p => { if (!p || !d) return; const amt = isCredit(p) ? (check(c, p, null).max || CAT[p].min) : null; this.setDec(cid, { status: 'PENDIENTE', limited: d.limited || d.status === 'SIN_OFERTA', list: [...d.list, p], edits: { ...d.edits, [p]: { amount: amt } }, errors: null }); };
+      const tab = s.tab, chats = s.chats[cid];
+      pd = {
+        i1: x.i1, i2: x.done ? x.i2 : '—', final: x.done ? x.final : '—', pos: order.findIndex(y => y.cid === cid) + 1, segment: SEG(c.income)[0],
+        ready: !!res, notReady: !res, closing: res ? res.closing : '',
+        sinOferta: !!(d && d.status === 'SIN_OFERTA'), isPending: !!(d && d.status === 'PENDIENTE'), isApproved: !!(d && d.status === 'APROBADA'), isRejected: !!(d && d.status === 'RECHAZADA'),
+        canAdd: !!(d && d.status === 'PENDIENTE'),
+        // sin oferta viable: solo productos sin crédito (no comprometen capital del banco)
+        addOptions: d && d.list ? IDS.filter(p => !c.products.includes(p) && !d.list.includes(p) && !((d.status === 'SIN_OFERTA' || d.limited) && isCredit(p))).map(p => ({ pid: p, name: CAT[p].name })) : [],
+        bankCatalog: IDS.map(p => {
+          const has = c.products.includes(p), inList = !!(d && d.list && d.list.includes(p)), r = check(c, p, null);
+          const blocked = isCredit(p) && ((d && (d.limited || d.status === 'SIN_OFERTA')) || !(r.max >= CAT[p].min && r.max > 0));
+          const canAdd = !!(d && (d.status === 'PENDIENTE' || d.status === 'SIN_OFERTA')) && !has && !inList && !blocked;
+          return { name: CAT[p].name, note: isCredit(p) ? (blocked && !has ? 'No elegible hoy' : `Hasta ${fmt(r.max || 0)}`) : 'Sin crédito', has, inList, canAdd, add: () => addPid(p) };
+        }),
+        allyCatalog: ALLY_IDS.map(p => {
+          const inList = !!(d && d.list && d.list.includes(p)), rec = PROFILE[cid].recs.find(rr => rr.b === ALLY[p].brand);
+          return { name: ALLY[p].name, brand: ALLY[p].brand, hasAff: !!rec, aff: rec ? `Afinidad ${rec.prob}%` : '', has: false, inList, canAdd: !!(d && (d.status === 'PENDIENTE' || d.status === 'SIN_OFERTA')) && !inList, add: () => addPid(p) };
+        }),
+        addOpen: s.addOpen, openAdd: () => this.setState({ addOpen: true }), closeAdd: () => this.setState({ addOpen: false }),
+        items: res && d && d.status === 'PENDIENTE' ? d.list.map(pid => {
+          const it = res.items.find(x => x.pid === pid), ai = !!it;
+          const e = d.edits[pid], credit = isCredit(pid), max = credit ? check(c, pid, null).max : null, over = credit && e.amount > max;
+          return {
+            name: CAT[pid].name, isAi: ai, isCredit: credit, amount: e.amount,
+            rowBg: ai ? '#EAF4F2' : '#FFFFFF', rowBorder: ai ? '#B5D3CC' : '#D7E7E3',
+            tag: !ai ? (credit ? 'Agregado por ti · Riesgo lo valida al aprobar' : ALLY[pid] ? `Agregado por ti · Aliado ${ALLY[pid].brand}` : 'Agregado por ti') : it.decision === 'CONTRAOFERTA' ? `Contraoferta de Riesgo · propuesto ${fmt(res.proposed.find(p => p.pid === pid).amount)}` : 'Aprobado por Riesgo',
+            tagColor: !ai ? '#4A6572' : it.decision === 'CONTRAOFERTA' ? '#C2410C' : '#007F73',
+            remove: () => this.setDec(cid, { list: d.list.filter(p => p !== pid), errors: null }),
+            minus: () => this.setEdit(cid, it.pid, { amount: Math.max(0, (e.amount || 0) - 500) }),
+            plus: () => this.setEdit(cid, it.pid, { amount: (e.amount || 0) + 500 }),
+            onInput: ev => this.setEdit(cid, it.pid, { amount: parseInt(ev.target.value, 10) || 0 }),
+            hint: over ? `Supera el máximo: ${fmt(max)}` : `Máximo permitido: ${fmt(max)}`,
+            hintColor: over ? '#C2410C' : '#4A6572', borderColor: over ? '#C2410C' : '#B5D3CC', amountColor: over ? '#C2410C' : '#0F2A2E'
+          };
+        }) : [],
+        comment: (d && d.comment) || '', onComment: ev => this.setDec(cid, { comment: ev.target.value }),
+        showComment: !!(d && d.comment && (d.status === 'APROBADA' || d.status === 'RECHAZADA')),
+        hasError: !!(d && d.errors && d.errors.length), errors: (d && d.errors) || [],
+        approve: () => this.approve(cid), reject: () => this.setDec(cid, { status: 'RECHAZADA', errors: null }),
+        approvedList: d && d.approved ? d.approved.map(a => CAT[a.pid].name + (a.amount != null ? ' · ' + fmt(a.amount) : '')) : [],
+        briefLoading: !!(d && d.briefLoading), hasBrief: !!(d && d.brief), brief: (d && d.brief) || { talking: [], objeciones: [] },
+        tabVC: () => this.setState({ tab: 'VC' }), tabRisk: () => this.setState({ tab: 'RISK' }),
+        vcLine: tab === 'VC' ? '#007F73' : 'transparent', riskLine: tab === 'RISK' ? '#C2410C' : 'transparent', sendBg: tab === 'VC' ? '#007F73' : '#C2410C',
+        placeholder: tab === 'VC' ? 'Pregunta o corrige a Venta cruzada' : 'Pregunta o corrige a Riesgo',
+        chat: chats ? chats[tab].map(m => ({ lines: m.lines, justify: m.from === 'user' ? 'flex-end' : 'flex-start', bg: m.from === 'user' ? '#FDF1D6' : (tab === 'VC' ? '#EAF4F2' : '#FCEEE7') })) : [],
+        chips: (tab === 'VC' ? ['¿Por qué estos productos?', '¿Qué otra opción hay?', '¿Y del ecosistema?'] : ['¿Por qué ese monto máximo?', '¿Y si subo a S/ 15,000?', '¿Qué tendría que mejorar?']).map(q => ({ text: q, ask: () => this.send(q) }))
+      };
+    }
+    return {
+      zoom: this.props.projector ? 1.2 : 1, st: this.props.showStreamlitNotes ?? true,
+      fallback: s.fallback, toggleFallback: this.toggleFallback, toggleBg: s.fallback ? '#F2B134' : '#4A6572', knobLeft: s.fallback ? '24px' : '4px',
+      projUp: approvedItems > 0, proj: ((22 + approvedItems) / 10).toFixed(1),
+      doneCount, approvedCount, vetoCount, reset: this.reset,
+      running, allDone: doneCount === 10, startAll: this.startAll,
+      progressText: doneCount === 10 ? '10 clientes analizados en paralelo' : running ? `Agentes analizando en paralelo · ${doneCount}/10` : `${doneCount}/10 analizados`,
+      progressW: doneCount * 10 + '%',
+      rows, showDetail: !!s.detail, dt, pd,
+      closeDetail: () => this.setState({ detail: null, addOpen: false }),
+      catalogBank: IDS.map(p => CAT[p].name), catalogAlly: ALLY_IDS.map(p => ({ name: ALLY[p].name, brand: ALLY[p].brand })), stop: e => e.stopPropagation(),
+      draft: s.draft, onDraft: e => this.setState({ draft: e.target.value }), onDraftKey: e => { if (e.key === 'Enter') this.send(); }, send: () => this.send()
+    };
+  }
+}
+</script>
+</body>
+</html>
