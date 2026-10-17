@@ -44,7 +44,7 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - `app.py` muestra el título "Crosspilot" y una barra lateral vacía.
   - Hecho cuando: `streamlit run app.py` abre y `pytest -q` corre sin errores. Primer push a GitHub.
 
-- [ ] **T1.2 [D] Seed y estado** · 30 min · R1, R8, NF2
+- [x] **T1.2 [D] Seed y estado** · 30 min · R1, R8, NF2
   - Archivos: `data/seed.json`, `crosspilot/data.py`, `tests/test_rules.py`.
   - `seed.json` exacto según design §5 (política, catálogo, 10 clientes, señales de C01 literales).
   - `new_state()` y `products_per_client(state)`.

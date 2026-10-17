@@ -1,0 +1,42 @@
+{
+  "policy": {"debt_multiple": 6, "max_days_late": 15, "round_to": 500},
+  "catalog": {
+    "credito_capital_trabajo": {"name": "Crédito capital de trabajo", "type": "credito", "min_amount": 1000, "max_amount": 50000, "annual_margin": 600},
+    "credito_activo_fijo": {"name": "Crédito activo fijo", "type": "credito", "min_amount": 5000, "max_amount": 80000, "annual_margin": 800},
+    "seguro_negocio": {"name": "Seguro de negocio", "type": "seguro", "min_amount": null, "max_amount": null, "annual_margin": 150},
+    "cuenta_ahorro": {"name": "Cuenta de ahorro", "type": "ahorro", "min_amount": null, "max_amount": null, "annual_margin": 60},
+    "cobro_qr": {"name": "Cobro con QR", "type": "pagos", "min_amount": null, "max_amount": null, "annual_margin": 120}
+  },
+  "clients": {
+    "C01": {"name": "Rosa Huamán", "business": "Taller de confección", "district": "La Victoria", "monthly_net_income": 3000, "current_debt": 6000, "max_days_late_12m": 3,
+            "products": ["credito_capital_trabajo", "cuenta_ahorro"],
+            "signals": ["Cotizó una remalladora industrial de S/ 20,000", "Cobra a clientes mayoristas por transferencia y QR de otros bancos", "Su maquinaria no tiene seguro"]},
+    "C02": {"name": "Jorge Mamani", "business": "Bodega", "district": "San Juan de Lurigancho", "monthly_net_income": 1500, "current_debt": 0, "max_days_late_12m": 0,
+            "products": ["cuenta_ahorro", "cobro_qr"],
+            "signals": ["Sus ventas suben en diciembre", "Paga a proveedores en efectivo", "Su local no tiene seguro"]},
+    "C03": {"name": "Lucía Torres", "business": "Restaurante", "district": "Surquillo", "monthly_net_income": 4000, "current_debt": 10000, "max_days_late_12m": 25,
+            "products": ["credito_capital_trabajo"],
+            "signals": ["Atrasos recientes por una obra frente al local", "Quiere ampliar la cocina", "Su local no tiene seguro contra incendio"]},
+    "C04": {"name": "Pedro Salazar", "business": "Ferretería", "district": "Los Olivos", "monthly_net_income": 6000, "current_debt": 30000, "max_days_late_12m": 0,
+            "products": ["credito_activo_fijo", "cuenta_ahorro", "seguro_negocio"],
+            "signals": ["Compra cemento y fierro antes de la temporada de obras", "Sus clientes le piden pagar con QR"]},
+    "C05": {"name": "Ana Flores", "business": "Salón de belleza", "district": "Miraflores", "monthly_net_income": 2500, "current_debt": 14000, "max_days_late_12m": 5,
+            "products": ["cuenta_ahorro"],
+            "signals": ["Compra insumos para la campaña de fiestas", "Sus equipos de peluquería no tienen seguro", "Cobra en efectivo y con billeteras digitales"]},
+    "C06": {"name": "Luis Rojas", "business": "Taller mecánico", "district": "Comas", "monthly_net_income": 2000, "current_debt": 12000, "max_days_late_12m": 10,
+            "products": ["credito_activo_fijo"],
+            "signals": ["Su deuda ya está al tope de su capacidad", "Su taller no tiene seguro", "Guarda el efectivo del día en el local"]},
+    "C07": {"name": "Carmen Díaz", "business": "Abarrotes al por mayor", "district": "La Victoria", "monthly_net_income": 5000, "current_debt": 5000, "max_days_late_12m": 0,
+            "products": ["credito_capital_trabajo", "cuenta_ahorro", "cobro_qr", "seguro_negocio"],
+            "signals": ["Quiere comprar un segundo camión de reparto", "Paga puntual hace tres años"]},
+    "C08": {"name": "Miguel Paredes", "business": "Carpintería", "district": "Villa El Salvador", "monthly_net_income": 2800, "current_debt": 3000, "max_days_late_12m": 18,
+            "products": ["cuenta_ahorro", "credito_capital_trabajo"],
+            "signals": ["Cotizó una cepilladora industrial", "Tuvo un atraso de 18 días en marzo"]},
+    "C09": {"name": "Sofía Ramos", "business": "Tienda de ropa", "district": "La Victoria", "monthly_net_income": 3500, "current_debt": 20000, "max_days_late_12m": 2,
+            "products": ["credito_capital_trabajo", "seguro_negocio", "cobro_qr"],
+            "signals": ["Deja el efectivo de la tienda en caja", "Vende más los fines de semana"]},
+    "C10": {"name": "Raúl Chávez", "business": "Imprenta", "district": "Breña", "monthly_net_income": 4500, "current_debt": 8000, "max_days_late_12m": 0,
+            "products": ["credito_activo_fijo", "credito_capital_trabajo", "cuenta_ahorro"],
+            "signals": ["Sus máquinas no tienen seguro", "Sus clientes corporativos piden pagar con QR"]}
+  }
+}
