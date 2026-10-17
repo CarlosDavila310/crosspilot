@@ -46,8 +46,8 @@ section[data-testid="stSidebar"] button { background: #0B4F57; border: 1px solid
 .cp-pos { display: inline-flex; width: 30px; height: 30px; border-radius: 50%; align-items: center;
           justify-content: center; font-weight: 700; }
 .cp-pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 2px 12px 2px 4px; }
-.cp-dot { width: 26px; height: 26px; border-radius: 50%; display: inline-block; }
-.cp-score { font-family: Cambria, Georgia, serif; font-size: 28px; font-weight: 700; color: #0F2A2E; }
+.cp-dot { width: 22px; height: 22px; border-radius: 50%; display: inline-block; }
+.cp-score { font-family: Cambria, Georgia, serif; font-size: 24px; font-weight: 700; color: #0F2A2E; }
 .cp-badge { display: inline-block; border-radius: 6px; padding: 2px 10px; font-size: 14px; font-weight: 700; }
 .cp-head { color: #4A6572; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: .03em; }
 .cp-band { background: #0B4F57; color: #FFF; border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; }
@@ -60,7 +60,21 @@ section[data-testid="stSidebar"] button { background: #0B4F57; border: 1px solid
 .cp-bar > div { height: 8px; border-radius: 4px; }
 [class*="st-key-ai-"] { background: #EAF4F2; border: 1px solid #B5D3CC; border-radius: 10px; padding: 10px 14px; }
 [class*="st-key-manual-"] { background: #FFFFFF; border: 1px solid #D7E7E3; border-radius: 10px; padding: 10px 14px; }
-[class*="st-key-row-"] { border-bottom: 1px solid #D7E7E3; padding: 6px 0; }
+.cp-grid { display: grid; align-items: center; column-gap: 16px;
+           grid-template-columns: 44px minmax(150px, 1.3fr) minmax(150px, 1.2fr) minmax(250px, 2fr) 104px 112px; }
+.cp-row { min-height: 64px; }
+[data-testid="stHorizontalBlock"]:has(.cp-row) [data-testid="stMarkdownContainer"],
+[data-testid="stHorizontalBlock"]:has(.cp-row-head) [data-testid="stMarkdownContainer"] { margin-bottom: 0; }
+.cp-offer-line { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; line-height: 1.5; font-size: 15px; }
+.cp-offer-line .cp-tag { margin-left: 0; }
+[data-testid="stHorizontalBlock"]:has(.cp-row) { border-bottom: 1px solid #D7E7E3; padding: 8px 4px; }
+[data-testid="stHorizontalBlock"]:has(.cp-row):hover { background: #F4FAF8; }
+[data-testid="stHorizontalBlock"]:has(.cp-row-head) { background: #F4FAF8; border-radius: 8px 8px 0 0;
+                                                      border-bottom: 1px solid #D7E7E3; padding: 12px 4px; }
+[data-testid="stHorizontalBlock"]:has(.cp-row) .stMarkdown p,
+[data-testid="stHorizontalBlock"]:has(.cp-row-head) .stMarkdown p { margin: 0; }
+section[data-testid="stSidebar"] ul { margin: 0 0 8px 0; padding-left: 18px; }
+section[data-testid="stSidebar"] li { font-size: 15px; margin: 0; }
 </style>
 """
 
@@ -164,8 +178,9 @@ def sidebar():
     now, projected = products_per_client(state), projected_products_per_client(state, approved_items)
     with st.sidebar:
         st.markdown("<h2 style='color:#FFF;margin-bottom:0'>Crosspilot</h2>"
-                    "<div style='color:#8FD3C4'>Copiloto de priorización y pre-visita</div>", unsafe_allow_html=True)
-        st.toggle("Modo respaldo", key="fallback", help="Respuestas predefinidas, sin llamar a la API.")
+                    "<div style='color:#8FD3C4;margin-bottom:12px'>Copiloto de priorización y pre-visita</div>", unsafe_allow_html=True)
+        st.toggle("Modo respaldo", key="fallback")
+        st.caption("Respuestas predefinidas, sin llamar a la API.")
         st.metric("Productos por cliente", f"{now:.1f}",
                   delta=f"{projected:.1f} si aceptan lo aprobado" if projected > now else None)
         done = sum(r["status"] == "done" for r in ss.runs.values())
@@ -188,7 +203,8 @@ def sidebar():
 
 # ---------- portfolio table ----------
 
-COLS = [0.6, 2.0, 1.7, 2.8, 1.3, 1.2, 0.9]
+ROW_SPLIT = [11, 0.9]  # grid with the data | action button
+HEADERS = ["Orden", "Cliente", "Productos actuales", "Oferta tras riesgo", "Prioridad", "Estado"]
 
 
 def offer_cell(run, stage):
@@ -207,52 +223,58 @@ def offer_cell(run, stage):
     for d in res["decisions"]:
         amount = d["max_amount"] if d["decision"] == rules.CONTRAOFERTA else d.get("amount")
         label = name(d["product_id"], short=True) + (f" {rules.fmt_soles(amount)}" if amount is not None else "")
-        lines.append(f"<div><b>{esc(label)}</b><span class='cp-tag' style='background:{TAG_COLORS[d['decision']]}'>"
-                     f"{d['decision']}</span></div>")
+        lines.append(f"<div class='cp-offer-line'><b>{esc(label)}</b><span class='cp-tag' "
+                     f"style='background:{TAG_COLORS[d['decision']]}'>{d['decision']}</span></div>")
     return "".join(lines)
 
 
-def render_row(pos, row, stage=None, interactive=True):
+def row_html(pos, row, stage):
+    """One CSS-grid row, so every cell shares the same height and column widths."""
     ss = st.session_state
     cid, run, score = row["cid"], row["run"], row["score"]
     client = ss.state["clients"][cid]
     top = score is not None and pos <= 3
-    cells = st.columns(COLS, vertical_alignment="center")
-    cells[0].markdown(f"<span class='cp-pos' style='background:{'#0B4F57' if top else '#EEF2F3'};"
-                      f"color:{'#FFF' if top else '#4A6572'}'>{pos}</span>", unsafe_allow_html=True)
-    cells[1].markdown(f"<b>{esc(client['name'])}</b><br><span class='cp-muted'>{esc(client['business'])}</span>",
-                      unsafe_allow_html=True)
-    cells[2].markdown("".join(f"<span class='cp-chip'>{esc(name(p, short=True))}</span>" for p in client["products"]),
-                      unsafe_allow_html=True)
-    cells[3].markdown(offer_cell(run, stage), unsafe_allow_html=True)
+    position = (f"<span class='cp-pos' style='background:{'#0B4F57' if top else '#EEF2F3'};"
+                f"color:{'#FFF' if top else '#4A6572'}'>{pos}</span>")
+    who = f"<div><b>{esc(client['name'])}</b><br><span class='cp-muted'>{esc(client['business'])}</span></div>"
+    chips = "<div>" + "".join(f"<span class='cp-chip'>{esc(name(p, short=True))}</span>" for p in client["products"]) + "</div>"
     if score is None:
-        cells[4].markdown("<span class='cp-muted'>—</span>", unsafe_allow_html=True)
+        priority = "<span class='cp-muted'>—</span>"
     else:
         dot, bg = light(score)
-        cells[4].markdown(f"<span class='cp-pill' style='background:{bg}'><span class='cp-dot' style='background:{dot}'>"
-                          f"</span><span class='cp-score'>{score}</span></span>", unsafe_allow_html=True)
+        priority = (f"<span class='cp-pill' style='background:{bg}'><span class='cp-dot' style='background:{dot}'>"
+                    f"</span><span class='cp-score'>{score}</span></span>")
     decision = ss.decisions.get(cid)
+    status = ""
     if decision:
         label, bg, fg = STATUS_BADGES[decision["status"]]
-        cells[5].markdown(f"<span class='cp-badge' style='background:{bg};color:{fg}'>{label}</span>",
-                          unsafe_allow_html=True)
+        status = f"<span class='cp-badge' style='background:{bg};color:{fg}'>{label}</span>"
+    cells = [position, who, chips, f"<div>{offer_cell(run, stage)}</div>", priority, status]
+    return "<div class='cp-grid cp-row'>" + "".join(f"<div>{c}</div>" for c in cells) + "</div>"
+
+
+def render_row(pos, row, stage=None, interactive=True):
+    ss = st.session_state
+    cid, run = row["cid"], row["run"]
+    data, action = st.columns(ROW_SPLIT, vertical_alignment="center")
+    data.markdown(row_html(pos, row, stage), unsafe_allow_html=True)
     if not interactive:
         return
     if run["status"] == "error":
-        if cells[6].button("Reintentar", key=f"retry-{cid}"):
-            with st.spinner(f"Reintentando {client['name']}…"):
+        if action.button("Reintentar", key=f"retry-{cid}", use_container_width=True):
+            with st.spinner(f"Reintentando {ss.state['clients'][cid]['name']}…"):
                 store_run(cid, run_one(ss.state, cid, fake=fake_mode()))
             st.rerun()
-    elif run["status"] == "done" and cells[6].button("Ver", key=f"open-{cid}", type="primary"):
+    elif run["status"] == "done" and action.button("Ver", key=f"open-{cid}", type="primary",
+                                                   use_container_width=True):
         ss.detail = cid
         st.rerun()
 
 
 def table_header():
-    cells = st.columns(COLS)
-    for cell, title in zip(cells, ["Orden", "Cliente", "Productos actuales", "Oferta tras riesgo",
-                                   "Prioridad de visita", "Estado", ""]):
-        cell.markdown(f"<span class='cp-head'>{title}</span>", unsafe_allow_html=True)
+    data, _ = st.columns(ROW_SPLIT, vertical_alignment="bottom")
+    data.markdown("<div class='cp-grid cp-row-head'>" + "".join(f"<div class='cp-head'>{t}</div>" for t in HEADERS)
+                  + "</div>", unsafe_allow_html=True)
 
 
 def analyze(progress_slot, table_slot):
@@ -311,8 +333,7 @@ def portfolio_page():
     with table_slot.container():
         table_header()
         for pos, row in enumerate(scored_rows(), start=1):
-            with st.container(key=f"row-{row['cid']}"):
-                render_row(pos, row)
+            render_row(pos, row)
     st.caption("El puntaje es un apoyo, no una decisión: el ejecutivo valida en terreno y aprueba cada oferta.")
 
 
