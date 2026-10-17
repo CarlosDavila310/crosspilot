@@ -80,3 +80,28 @@ def validate_offer(state, client_id, items):
         credits += is_credit(state, pid)
         kept.append(item)
     return kept, dropped
+
+
+def bank_products(state):
+    """Bank catalog ids, in catalog order. Partner products are not part of credit risk or ranking."""
+    return [pid for pid, p in state["catalog"].items() if p["type"] != "aliado"]
+
+
+def eligible_products(state, client_id):
+    """Bank products the client lacks and that check_policy would not veto."""
+    # amount=None: an eligible credit comes back as CONTRAOFERTA for its max amount.
+    return [pid for pid in bank_products(state)
+            if decide(state, pid, check_policy(state, client_id, pid)) != VETO]
+
+
+def rank_clients(state, n=5):
+    """Design §6.2: best eligible credit margin + all eligible non-credit margins."""
+    ranking = []
+    for cid in state["clients"]:
+        eligible = eligible_products(state, cid)
+        margin = lambda pid: state["catalog"][pid]["annual_margin"]
+        credits = [margin(pid) for pid in eligible if is_credit(state, pid)]
+        others = [margin(pid) for pid in eligible if not is_credit(state, pid)]
+        ranking.append({"client_id": cid, "score": max(credits, default=0) + sum(others), "eligible": eligible})
+    ranking.sort(key=lambda r: (-r["score"], r["client_id"]))
+    return ranking[:n]

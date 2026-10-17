@@ -56,7 +56,7 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - Tests: C01 activo fijo por 20,000 da CONTRAOFERTA de 12,000; C03 crédito da VETO; no crédito
     nuevo da APROBADO; producto ya contratado da VETO; los 4 casos de descarte de `validate_offer`.
 
-- [ ] **T1.4 [D] Reglas: rank_clients** · 20 min · R1
+- [x] **T1.4 [D] Reglas: rank_clients** · 20 min · R1
   - Archivos: `crosspilot/rules.py`, `tests/test_rules.py`.
   - Según design §6.2.
   - Test: top 5 = `["C01","C02","C05","C07","C04"]`, puntajes `[1070, 950, 870, 800, 720]`.

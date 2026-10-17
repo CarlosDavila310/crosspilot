@@ -1,5 +1,5 @@
 from crosspilot.data import new_state, products_per_client
-from crosspilot.rules import APROBADO, CONTRAOFERTA, VETO, check_policy, decide, validate_offer
+from crosspilot.rules import APROBADO, CONTRAOFERTA, VETO, check_policy, decide, rank_clients, validate_offer
 
 
 def test_seed_starts_at_2_2_products_per_client():
@@ -95,3 +95,10 @@ def test_validate_offer_caps_at_two_items_and_drops_repeats():
     assert [i["product_id"] for i in kept] == ["seguro_negocio", "credito_capital_trabajo"]
     assert [d["reason"] for d in dropped][0] == "producto repetido"
     assert len(dropped) == 2
+
+
+def test_rank_clients_top5():
+    top = rank_clients(new_state())
+    assert [r["client_id"] for r in top] == ["C01", "C02", "C05", "C07", "C04"]
+    assert [r["score"] for r in top] == [1070, 950, 870, 800, 720]
+    assert top[0]["eligible"] == ["credito_activo_fijo", "seguro_negocio", "cobro_qr"]
