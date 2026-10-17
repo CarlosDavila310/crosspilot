@@ -373,14 +373,23 @@ def approved_counts():
 
 # ---------- sidebar ----------
 
-def sidebar():
+def stats_html():
     ss = st.session_state
     state = ss.state
-    offers, items = approved_counts()
+    offers, _ = approved_counts()
     vetoes = sum(r["result"]["vetoes"] for r in ss.runs.values() if r["status"] == "done")
     state["stats"].update(approved_offers=offers, vetoes=vetoes)
-    now, projected = products_per_client(state), projected_products_per_client(state, items)
     done = sum(r["status"] == "done" for r in ss.runs.values())
+    return "<div>" + "".join(f"<div class='sb-stat'><span>{label}</span><span>{value}</span></div>" for label, value in [
+        ("Clientes analizados", f"{done}/{len(state['clients'])}"), ("Ofertas aprobadas", offers),
+        ("Vetos de riesgo", vetoes)]) + "</div>"
+
+
+def sidebar():
+    """Renders the sidebar; returns the stats slot so the parallel run can refresh it live."""
+    state = st.session_state.state
+    _, items = approved_counts()
+    now, projected = products_per_client(state), projected_products_per_client(state, items)
     with st.sidebar:
         html_block("<div class='sb-brand'><div class='sb-logo'>🧭</div><div><div class='sb-title'>Crosspilot</div>"
                    "<div class='sb-sub'>Priorización y pre-visita</div></div></div>")
@@ -391,9 +400,8 @@ def sidebar():
                 f"</span></div>") if projected > now else ""
         html_block(f"<div class='sb-kpi'><div class='sb-label'>Productos por cliente</div><div class='sb-kpi-row'>"
                    f"<div class='sb-big'>{now:.1f}</div>{proj}</div></div>")
-        html_block("<div>" + "".join(f"<div class='sb-stat'><span>{label}</span><span>{value}</span></div>" for label, value in [
-            ("Clientes analizados", f"{done}/{len(state['clients'])}"), ("Ofertas aprobadas", offers),
-            ("Vetos de riesgo", vetoes)]) + "</div>")
+        stats_slot = st.empty()
+        html_block(stats_html(), stats_slot)
         if st.button("Reiniciar demo", key="reset", icon=":material/restart_alt:", use_container_width=True):
             init_session(reset=True)
             st.rerun()
@@ -407,6 +415,7 @@ def sidebar():
                    f"<div class='sb-group'>Del banco</div>{bank}<div class='sb-group'>De aliados</div>{allies}"
                    f"<div class='sb-note' style='margin-top:6px'>Aliados de ejemplo, sin acuerdo comercial.</div></div>")
         html_block("<div class='sb-note sb-section'>Próximo módulo: registro post-visita (en evolución).</div>")
+    return stats_slot
 
 
 # ---------- portfolio table ----------
@@ -474,7 +483,7 @@ def progress_html(done, total, running):
             f"<div class='prog-bar'><div style='width:{done / total * 100:.0f}%'></div></div>")
 
 
-def analyze(progress_slot, table_slot):
+def analyze(progress_slot, table_slot, stats_slot):
     """Runs every client in parallel and repaints the table while agents work (V1.1–V1.3)."""
     ss = st.session_state
     cids = list(ss.state["clients"])
@@ -496,13 +505,14 @@ def analyze(progress_slot, table_slot):
         html_block(progress_html(len(ss.runs), len(cids), running=True), progress_slot)
         rows = "".join(row_html(pos, row, stages[row["cid"]]) for pos, row in enumerate(scored_rows(), start=1))
         html_block(f"<div class='cp-table'>{head_html()}{rows}</div>", table_slot)
+        html_block(stats_html(), stats_slot)
 
     paint()
     run_portfolio(ss.state, cids, fake=fake_mode(), on_stage=on_stage, on_done=on_done, on_tick=paint,
                   pace=1.0 if fake_mode() else 0)
 
 
-def portfolio_page():
+def portfolio_page(stats_slot):
     ss = st.session_state
     n = len(ss.state["clients"])
     if fake_mode():
@@ -519,7 +529,7 @@ def portfolio_page():
     table_slot = st.empty()
     if clicked or not ss.auto_started:
         ss.auto_started = True
-        analyze(progress_slot, table_slot)
+        analyze(progress_slot, table_slot, stats_slot)
         st.rerun()
     done = sum(r["status"] == "done" for r in ss.runs.values())
     html_block(progress_html(done, n, running=False), progress_slot)
@@ -921,13 +931,13 @@ def detail_page(cid):
 def main():
     init_session()
     st.markdown(CSS, unsafe_allow_html=True)
-    sidebar()
+    stats_slot = sidebar()
     ss = st.session_state
     if ss.detail and ss.runs.get(ss.detail, {}).get("status") == "done":
         detail_page(ss.detail)
     else:
         ss.detail = None
-        portfolio_page()
+        portfolio_page(stats_slot)
 
 
 main()
