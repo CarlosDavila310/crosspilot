@@ -61,13 +61,13 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - Según design §6.2.
   - Test: top 5 = `["C01","C02","C05","C07","C04"]`, puntajes `[1070, 950, 870, 800, 720]`.
 
-- [ ] **T1.5 [A] Bucle de agentes y modo respaldo** · 40 min · R9
+- [x] **T1.5 [A] Bucle de agentes y modo respaldo** · 40 min · R9
   - Archivos: `crosspilot/llm.py`, `crosspilot/fakes.py`.
   - `run_agent()` y `AgentError` según design §7.1.
   - `fakes.respond()` con `cross_sell` y `brief` de C01 (design §11). El resto, en T2.6.
   - Prueba manual: una llamada real devuelve el `input` de la herramienta de envío.
 
-- [ ] **T1.6 [A] Agentes Venta cruzada y Visita** · 30 min · R2.1–R2.3, R6
+- [x] **T1.6 [A] Agentes Venta cruzada y Visita** · 30 min · R2.1–R2.3, R6
   - Archivo: `crosspilot/agents.py`.
   - `cross_sell(state, client_id, fake)` y `visit_brief(state, client_id, items, pitch, fake)` con
     prompts y esquemas de design §7.2 y §7.4. El `enum` de `product_id` se arma desde el catálogo.
@@ -87,11 +87,11 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
 
 **Meta:** negociación visible, contraoferta de riesgo y aprobación humana.
 
-- [ ] **T2.1 [A] Agente Riesgo** · 25 min · R3.5
+- [x] **T2.1 [A] Agente Riesgo** · 25 min · R3.5
   - Archivo: `crosspilot/agents.py`, `crosspilot/fakes.py` (risk de C01).
   - `risk_review(state, client_id, items, fake)` con `check_policy` como herramienta real (design §7.3).
 
-- [ ] **T2.2 [A] Orquestador** · 40 min · R2.4, R2.5, R3, R4
+- [x] **T2.2 [A] Orquestador** · 40 min · R2.4, R2.5, R3, R4
   - Archivos: `crosspilot/orchestrator.py`, `tests/test_flow.py`.
   - `run_pipeline()` exacto según design §8, con los mensajes de log tal cual.
   - Test: C01 en fake da `PENDIENTE_APROBACION`, activo fijo 12,000 + seguro, y el log empieza y
@@ -107,11 +107,11 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - Archivo: `app.py`.
   - 4 métricas, delta de productos por cliente frente a 2.2, botón "Reiniciar demo".
 
-- [ ] **T2.5 [D] Revisión de datos para el demo** · 20 min · R3.3
+- [x] **T2.5 [D] Revisión de datos para el demo** · 20 min · R3.3
   - Archivo: `data/seed.json`.
   - Revisar que las señales de los 10 clientes sean coherentes. Correr C03 y confirmar VETO visible.
 
-- [ ] **T2.6 [A] Respaldo genérico** · 20 min · R9
+- [x] **T2.6 [A] Respaldo genérico** · 20 min · R9
   - Archivo: `crosspilot/fakes.py`.
   - Respuestas genéricas para los demás clientes (design §11).
 

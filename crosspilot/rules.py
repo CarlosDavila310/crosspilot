@@ -105,3 +105,47 @@ def rank_clients(state, n=5):
         ranking.append({"client_id": cid, "score": max(credits, default=0) + sum(others), "eligible": eligible})
     ranking.sort(key=lambda r: (-r["score"], r["client_id"]))
     return ranking[:n]
+
+
+def round_half_up(x):
+    return int(x + 0.5)
+
+
+def segment(monthly_net_income):
+    """(label, points) used by the priority base score (requirements_v2 §3)."""
+    if monthly_net_income >= 4000:
+        return "Pequeña empresa", 100
+    if monthly_net_income >= 2500:
+        return "Micro · alta", 70
+    return "Micro", 40
+
+
+def priority_score(state, client_id, result):
+    """Requirements_v2 V2.2. `result` is run_pipeline's output (status and final items)."""
+    client = state["clients"][client_id]
+    years = state["meta"]["reference_year"] - client["bank_since"]
+    base = 50 * client["principality"] + 30 * min(years / 10, 1) + 0.2 * segment(client["monthly_net_income"])[1]
+    if result["status"] == "SIN_OFERTA" or not result["items"]:
+        offer = 5
+    else:
+        margin = sum(state["catalog"][i["product_id"]]["annual_margin"] for i in result["items"])
+        top_prob = max((r["prob"] for r in client["recommendations"]), default=0)
+        offer = min(100, margin / 10) * 0.5 + top_prob * 0.3 + len(result["items"]) / 2 * 20
+        if client["max_days_late_12m"] > state["policy"]["max_days_late"]:
+            offer *= 0.6
+    return round_half_up(0.4 * base + 0.6 * offer)
+
+
+def validate_approval(state, client_id, items):
+    """Edge validation when the executive approves (requirements_v2 §5). Returns error messages."""
+    if not items:
+        return ["Incluye al menos un producto para aprobar."]
+    credits = [i for i in items if is_credit(state, i["product_id"])]
+    if len(credits) > 1:
+        return ["Solo se ofrece un crédito por visita: la capacidad de endeudamiento es una sola."]
+    errors = []
+    for item in items:
+        check = check_policy(state, client_id, item["product_id"], item.get("amount"))
+        if not check["approved"]:
+            errors.append(f"{state['catalog'].get(item['product_id'], {}).get('name', item['product_id'])}: {check['reasons'][0]}.")
+    return errors

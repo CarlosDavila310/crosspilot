@@ -1,5 +1,5 @@
 from crosspilot.data import new_state, products_per_client
-from crosspilot.rules import APROBADO, CONTRAOFERTA, VETO, check_policy, decide, rank_clients, validate_offer
+from crosspilot.rules import APROBADO, CONTRAOFERTA, VETO, check_policy, decide, priority_score, rank_clients, validate_offer
 
 
 def test_seed_starts_at_2_2_products_per_client():
@@ -102,3 +102,22 @@ def test_rank_clients_top5():
     assert [r["client_id"] for r in top] == ["C01", "C02", "C05", "C07", "C04"]
     assert [r["score"] for r in top] == [1070, 950, 870, 800, 720]
     assert top[0]["eligible"] == ["credito_activo_fijo", "seguro_negocio", "cobro_qr"]
+
+
+def test_priority_score_c01_is_85():
+    state = new_state()
+    result = {"status": "PENDIENTE_APROBACION", "items": [
+        {"product_id": "credito_activo_fijo", "amount": 12000}, {"product_id": "seguro_negocio", "amount": None}]}
+    assert priority_score(state, "C01", result) == 85
+
+
+def test_priority_score_without_offer_uses_5_points():
+    state = new_state()
+    # C06 base = 50*0.7 + 30*0.7 + 0.2*40 = 64 -> 0.4*64 + 0.6*5 = 28.6
+    assert priority_score(state, "C06", {"status": "SIN_OFERTA", "items": []}) == 29
+
+
+def test_partner_products_do_not_change_ranking_or_policy():
+    state = new_state()
+    assert "pac_multirriesgo" not in rank_clients(state, n=10)[0]["eligible"]
+    assert check_policy(state, "C03", "yape_negocio")["approved"] is True

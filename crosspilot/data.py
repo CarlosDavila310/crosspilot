@@ -17,3 +17,10 @@ def new_state():
 def products_per_client(state):
     clients = state["clients"].values()
     return round(sum(len(c["products"]) for c in clients) / len(clients), 1)
+
+
+def projected_products_per_client(state, approved_products):
+    """Products per client if every approved product is accepted (requirements_v2 §6)."""
+    clients = state["clients"].values()
+    total = sum(len(c["products"]) for c in clients) + approved_products
+    return round(total / len(clients), 1)
