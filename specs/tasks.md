@@ -143,7 +143,7 @@ T1.7, T2.3 y T2.4 se implementaron directamente con la interfaz v2 (cartera + pa
     `app.py` (sección 5, coordinar con I), `tests/test_flow.py`.
   - Test: flujo completo de C01 en fake (aprobar y registrar ACEPTO) lleva productos por cliente de 2.2 a 2.4.
 
-- [ ] **T3.2 [I] Despliegue** · 25 min
+- [x] **T3.2 [I] Despliegue** · 25 min
   - Archivos: `README.md`.
   - Streamlit Community Cloud con `ANTHROPIC_API_KEY` en Secrets (design §14).
   - README de 10 líneas: qué es, cómo correr, URL del demo.

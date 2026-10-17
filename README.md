@@ -23,7 +23,7 @@ Sin API key, la app arranca con el Modo respaldo encendido.
 
 Streamlit Community Cloud → nueva app desde este repo, archivo `app.py`, y en Secrets: `ANTHROPIC_API_KEY = "..."`.
 
-URL del demo: _pendiente_
+URL del demo: https://crosspilot.streamlit.app/
 
 ## Estructura
 
