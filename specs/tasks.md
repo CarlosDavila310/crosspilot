@@ -72,7 +72,7 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - `cross_sell(state, client_id, fake)` y `visit_brief(state, client_id, items, pitch, fake)` con
     prompts y esquemas de design §7.2 y §7.4. El `enum` de `product_id` se arma desde el catálogo.
 
-- [ ] **T1.7 [I] Flujo mínimo en la UI** · 40 min · R1, R6
+- [x] **T1.7 [I] Flujo mínimo en la UI** · 40 min · R1, R6
   - Archivo: `app.py`.
   - Sección 1 (agenda + selector + "Preparar visita") y sección 4 (ficha).
   - Flujo provisional: `cross_sell`, luego `validate_offer`, luego `visit_brief`, sin riesgo ni
@@ -97,13 +97,13 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
   - Test: C01 en fake da `PENDIENTE_APROBACION`, activo fijo 12,000 + seguro, y el log empieza y
     termina con ORQUESTADOR.
 
-- [ ] **T2.3 [I] Negociación y aprobación en la UI** · 45 min · R4, R5
+- [x] **T2.3 [I] Negociación y aprobación en la UI** · 45 min · R4, R5
   - Archivo: `app.py`.
   - Reemplazar el flujo provisional por `run_pipeline`. Sección 2 (chat de agentes) y sección 3
     (incluir/editar/aprobar/rechazar con revalidación, design §9). La ficha sale solo tras aprobar.
   - Prueba manual: subir el monto de C01 a 15,000 y aprobar muestra error y bloquea la aprobación.
 
-- [ ] **T2.4 [I] Barra lateral** · 20 min · R8, R10
+- [x] **T2.4 [I] Barra lateral** · 20 min · R8, R10
   - Archivo: `app.py`.
   - 4 métricas, delta de productos por cliente frente a 2.2, botón "Reiniciar demo".
 
@@ -122,11 +122,23 @@ En tareas con más lógica (T2.2, T2.3, T3.1), pídele primero un plan breve, re
 
 ---
 
+## Sprint 2b · Cambios v2 tras la mentoría (requirements_v2 §9)
+
+T1.7, T2.3 y T2.4 se implementaron directamente con la interfaz v2 (cartera + panel de detalle).
+
+- [x] **T2.8 [D]** `priority_score` + datos de perfil y aliados en seed. Test: C01 = 85 y #1.
+- [x] **T2.9 [A]** `run_portfolio(state)` paralelo con ThreadPoolExecutor; errores por cliente aislados.
+- [x] **T2.10 [I]** Tabla de cartera + semáforo + progreso.
+- [x] **T2.11 [I]** Panel de detalle: oferta editable, popup agregar, comentarios, chat en pestañas, ficha, perfil.
+- [x] **T2.12 [A]** Chat de seguimiento con `run_agent` por pestaña; modo respaldo por palabra clave.
+
+---
+
 ## Sprint 3 · MAKE IT REAL (15:50 – 17:00)
 
 **Meta:** flujo cerrado, URL pública y demo ensayado.
 
-- [ ] **T3.1 [A+D] Post-visita y CRM** · 35 min · R7, R8.2
+- [ ] **T3.1 [A+D] Post-visita y CRM** · 35 min · R7, R8.2 · _fuera del core (requirements_v2 §8)_
   - Archivos: `crosspilot/agents.py`, `crosspilot/fakes.py`, `crosspilot/rules.py` (validate_crm_entry),
     `app.py` (sección 5, coordinar con I), `tests/test_flow.py`.
   - Test: flujo completo de C01 en fake (aprobar y registrar ACEPTO) lleva productos por cliente de 2.2 a 2.4.
